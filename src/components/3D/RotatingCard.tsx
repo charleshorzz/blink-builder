@@ -1,4 +1,3 @@
-
 import React, { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -36,8 +35,6 @@ const CardMesh: React.FC<RotatingCardProps> = ({
         wireframe={wireframe}
         roughness={0.2}
         metalness={0.5}
-        emissive={"#ffffff"}
-        emissiveIntensity={0.2}
       />
     </mesh>
   );
@@ -54,7 +51,7 @@ const RotatingCard: React.FC<RotatingCardProps & { className?: string }> = ({
       <Canvas camera={{ position: [-5, -5, 6], fov: 45 }}>
         {/* Increased ambient light intensity for overall brightness */}
         <ambientLight intensity={1.2} />
-        
+
         {/* Increased spotlight intensity and adjusted angle */}
         <spotLight
           position={[5, 5, 5]}
@@ -63,7 +60,7 @@ const RotatingCard: React.FC<RotatingCardProps & { className?: string }> = ({
           intensity={2.0}
           castShadow
         />
-        
+
         {/* Added extra point lights for more illumination from different angles */}
         <pointLight position={[-5, -5, -5]} intensity={1.5} />
         <pointLight position={[0, 0, 8]} intensity={1.0} color="#ffffff" />

@@ -65,10 +65,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
             </Button>
           </div>
         </div>
-        <div className="w-full md:w-1/2 h-[400px] md:h-[500px] relative">
+        <div className="w-full md:w-1/2 h-[500px] md:h-[600px] relative">
           <div className="absolute inset-0 w-full h-full rounded-lg overflow-hidden">
             <RotatingCard />
-
             <div className="absolute bottom-10 right-10 w-20 h-20 bg-builder-accent/20 rounded-lg animate-pulse-light"></div>
             <div
               className="absolute top-10 left-10 w-16 h-16 bg-builder-secondary/20 rounded-lg animate-pulse-light"
@@ -177,7 +176,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
               style={{ animationDelay: `${template.delay}ms` }}
             >
               <div className="h-48 relative">
-                <RotatingCard color={template.color} />
+                <img
+                  src={"blockchainCard.png"}
+                  alt={"image"}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="p-6">
                 <h3 className="font-semibold text-xl mb-2">{template.title}</h3>
