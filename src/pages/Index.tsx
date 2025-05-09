@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import LandingPage from '@/components/LandingPage';
 import BuilderPage from '@/components/BuilderPage';
 import { useToast } from '@/hooks/use-toast';
