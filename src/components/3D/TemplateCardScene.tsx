@@ -1,3 +1,4 @@
+
 import React, { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Float } from "@react-three/drei";
@@ -30,10 +31,10 @@ const CardMesh: React.FC<TemplateCardSceneProps> = ({
           <boxGeometry args={[3, 4, 0.2]} />
           <meshStandardMaterial
             color={color}
-            roughness={0.3}
-            metalness={0.8}
+            roughness={0.2}
+            metalness={0.6}
             emissive={color}
-            emissiveIntensity={0.2}
+            emissiveIntensity={0.3}
           />
         </mesh>
 
@@ -70,26 +71,21 @@ const TemplateCardScene: React.FC<
   return (
     <div className={`relative w-full h-full min-h-[300px] ${className}`}>
       <Canvas shadows camera={{ position: [0, 0, 5], fov: 45 }}>
-        {/* Lighting Adjustments */}
-        {/* Increase Ambient Light slightly */}
-        <ambientLight intensity={0.7} />
+        {/* Enhanced lighting for better visibility */}
+        <ambientLight intensity={1.2} />
 
-        {/* Adjust Spot Light position and intensity */}
-        {/* Moved closer and slightly increased intensity */}
+        {/* Adjusted spotlight for brighter illumination */}
         <spotLight
-          position={[5, 5, 5]} // Moved closer (e.g., from [10, 10, 10])
-          angle={0.3} // Wider angle might illuminate more of the card
-          penumbra={0.5} // Smoother edges
-          intensity={1.5} // Increased intensity (e.g., from 1)
+          position={[5, 5, 5]}
+          angle={0.5}
+          penumbra={0.5}
+          intensity={2.0}
           castShadow
         />
 
-        {/* Adjust Point Light position and intensity */}
-        {/* Moved closer and slightly increased intensity */}
-        <pointLight
-          position={[-5, -5, -5]} // Moved closer (e.g., from [-10, -10, -10])
-          intensity={1} // Increased intensity (e.g., from 0.5)
-        />
+        {/* Additional point lights for better illumination */}
+        <pointLight position={[-5, -5, -5]} intensity={1.5} />
+        <pointLight position={[0, 0, 8]} intensity={0.8} color="#ffffff" />
 
         {/* The 3D Card Mesh */}
         <CardMesh title={title} color={color} hoverEffect={hoverEffect} />
