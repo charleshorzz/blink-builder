@@ -10,33 +10,34 @@ interface RotatingCardProps {
   autoRotate?: boolean;
 }
 
-const CardMesh: React.FC<RotatingCardProps> = ({ color = '#8B5CF6', wireframe = false, autoRotate = true }) => {
+const CardMesh: React.FC<RotatingCardProps> = ({ color = '#4a9eff', wireframe = false, autoRotate = true }) => {
   const mesh = useRef<THREE.Mesh>(null);
+  const textureLoader = new THREE.TextureLoader();
+  // Use the uploaded image as a texture
+  const cardTexture = textureLoader.load('/blockchain-card.jpeg');
   
   useFrame(({ clock }) => {
     if (!mesh.current || !autoRotate) return;
-    // Gentle floating rotation
-    mesh.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.2 + Math.PI * 0.25;
-    mesh.current.rotation.z = Math.sin(clock.getElapsedTime() * 0.2) * 0.05;
+    // Faster rotation speed (increased from 0.3 to 1.0)
+    mesh.current.rotation.y = Math.sin(clock.getElapsedTime() * 1.0) * 0.5 + Math.PI * 0.25;
+    mesh.current.rotation.z = Math.sin(clock.getElapsedTime() * 0.8) * 0.15;
   });
 
   return (
     <mesh ref={mesh}>
       <boxGeometry args={[3, 4, 0.2]} />
       <meshStandardMaterial 
-        color={color} 
+        map={cardTexture}
         wireframe={wireframe}
         roughness={0.3}
         metalness={0.7}
-        emissive={color}
-        emissiveIntensity={0.2}
       />
     </mesh>
   );
 };
 
 const RotatingCard: React.FC<RotatingCardProps & { className?: string }> = ({ 
-  color = '#8B5CF6', 
+  color = '#4a9eff', 
   wireframe = false, 
   autoRotate = true,
   className = ''
