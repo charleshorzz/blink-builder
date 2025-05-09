@@ -11,12 +11,12 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ isLoggedIn, connectWallet }) => {
   return (
-    <header className="w-full py-4 px-6 flex items-center justify-between glass fixed top-0 left-0 right-0 z-50 border-b">
+    <header className="w-full py-4 px-6 flex items-center justify-between neo-blur fixed top-0 left-0 right-0 z-50 border-b border-white/10">
       <div className="flex items-center gap-2">
-        <div className="h-8 w-8 bg-builder-accent rounded-md flex items-center justify-center">
+        <div className="h-8 w-8 bg-builder-accent rounded-md flex items-center justify-center animate-pulse-light">
           <div className="h-3 w-3 bg-white rounded-sm"></div>
         </div>
-        <span className="font-bold text-xl tracking-tight">BlockBuilder</span>
+        <span className="font-bold text-xl tracking-tight text-gradient">BlockBuilder</span>
       </div>
 
       <nav className="hidden md:flex items-center gap-8">
@@ -29,10 +29,10 @@ const Navigation: React.FC<NavigationProps> = ({ isLoggedIn, connectWallet }) =>
       <div className="flex items-center gap-4">
         {isLoggedIn ? (
           <Link to="/builder">
-            <Button>Go to Builder</Button>
+            <Button className="gradient-border bg-builder-accent hover:bg-builder-accent/80">Go to Builder</Button>
           </Link>
         ) : (
-          <Button onClick={connectWallet} className="flex items-center gap-2">
+          <Button onClick={connectWallet} className="flex items-center gap-2 gradient-border animate-glow bg-builder-accent hover:bg-builder-accent/80">
             <Wallet size={16} />
             Connect Wallet
           </Button>

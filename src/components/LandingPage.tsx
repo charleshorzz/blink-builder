@@ -1,40 +1,62 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import Navigation from './Navigation';
+import RotatingCard from './3D/RotatingCard';
 
 interface LandingPageProps {
   connectWallet: () => void;
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
+  // Initialize animation delay counters for staggered animations
+  useEffect(() => {
+    const animatedElements = document.querySelectorAll('.animate-on-scroll');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-slide-up');
+          entry.target.classList.add('opacity-100');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    animatedElements.forEach(el => observer.observe(el));
+    
+    return () => {
+      animatedElements.forEach(el => observer.unobserve(el));
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col animated-bg">
       <Navigation isLoggedIn={false} connectWallet={connectWallet} />
       
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 md:px-10 lg:px-20 flex flex-col md:flex-row items-center gap-10 lg:gap-20">
-        <div className="w-full md:w-1/2 space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+        <div className="w-full md:w-1/2 space-y-6 z-10">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gradient">
             Build Web3 Apps<br />
             <span className="text-builder-accent">Without Code</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-md">
+          <p className="text-lg text-muted-foreground max-w-md animate-on-scroll opacity-0 transform translate-y-4">
             Create blockchain apps with our simple drag and drop builder. No coding required.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <Button onClick={connectWallet} size="lg" className="w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-on-scroll opacity-0 transform translate-y-4">
+            <Button onClick={connectWallet} size="lg" className="w-full sm:w-auto animate-glow bg-builder-accent hover:bg-builder-accent/80">
               Start Building
             </Button>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto gradient-border">
               View Templates
             </Button>
           </div>
         </div>
-        <div className="w-full md:w-1/2 relative h-[300px] md:h-[400px]">
-          <div className="absolute inset-0 w-full h-full bg-builder-light rounded-lg overflow-hidden builder-grid">
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-white/90 rounded-lg border shadow-md p-4 animate-float">
+        <div className="w-full md:w-1/2 h-[400px] md:h-[500px] relative">
+          <div className="absolute inset-0 w-full h-full rounded-lg overflow-hidden">
+            <RotatingCard />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 neo-blur rounded-lg border shadow-md p-4 z-10">
               <div className="h-4 w-3/4 bg-builder-accent/20 rounded mb-3"></div>
               <div className="flex gap-2 mb-4">
                 <div className="h-8 w-8 bg-builder-accent/30 rounded"></div>
@@ -50,9 +72,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-6 md:px-10 lg:px-20 bg-muted/50">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Key Features</h2>
+      <section className="py-20 px-6 md:px-10 lg:px-20 neo-blur">
+        <div className="text-center mb-16 animate-on-scroll opacity-0">
+          <h2 className="text-3xl font-bold mb-4 text-gradient">Key Features</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
             Everything you need to build powerful Web3 applications
           </p>
@@ -63,29 +85,39 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
             {
               title: "Web3 Components",
               description: "Ready-to-use components for token transfers, DAO voting, and NFT marketplaces",
+              delay: 0,
             },
             {
-              title: "Drag & Drop Interface",
-              description: "Simple visual builder to design your app with no coding required",
+              title: "Template System",
+              description: "Choose from professional templates that fit your project needs",
+              delay: 100,
             },
             {
               title: "Mobile Responsive",
               description: "All templates are fully responsive and work on any device",
+              delay: 200,
             },
             {
               title: "Custom Styling",
               description: "Personalize your app with custom colors, fonts and layouts",
+              delay: 300,
             },
             {
               title: "Instant Deployment",
               description: "One-click deployment to get your app live in minutes",
+              delay: 400,
             },
             {
               title: "Connect Any Wallet",
               description: "Support for MetaMask, WalletConnect, and more",
+              delay: 500,
             },
           ].map((feature, i) => (
-            <div key={i} className="bg-background p-6 rounded-lg border hover:shadow-md transition-shadow">
+            <div 
+              key={i} 
+              className="backdrop-blur-md bg-card/20 p-6 rounded-lg border border-white/10 hover-effect animate-on-scroll opacity-0"
+              style={{ animationDelay: `${feature.delay}ms` }}
+            >
               <h3 className="font-semibold text-xl mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
             </div>
@@ -95,8 +127,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
 
       {/* Templates Section */}
       <section className="py-20 px-6 md:px-10 lg:px-20">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-4">Ready-Made Templates</h2>
+        <div className="text-center mb-16 animate-on-scroll opacity-0">
+          <h2 className="text-3xl font-bold mb-4 text-gradient">Ready-Made Templates</h2>
           <p className="text-muted-foreground max-w-lg mx-auto">
             Start with a template and customize it to your needs
           </p>
@@ -107,21 +139,30 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
             {
               title: "Token Receiver",
               description: "Accept token payments with a simple form",
-              image: "bg-gradient-to-br from-purple-500/20 to-blue-500/20",
+              color: "#7E69AB",
+              delay: 0,
             },
             {
               title: "DAO Voting",
               description: "Create proposals and collect community votes",
-              image: "bg-gradient-to-br from-blue-500/20 to-green-500/20",
+              color: "#6E59A5",
+              delay: 200,
             },
             {
               title: "NFT Marketplace",
               description: "Buy, sell and trade NFTs in a custom marketplace",
-              image: "bg-gradient-to-br from-pink-500/20 to-purple-500/20",
+              color: "#8B5CF6",
+              delay: 400,
             },
           ].map((template, i) => (
-            <div key={i} className="rounded-lg overflow-hidden border group hover:shadow-lg transition-all">
-              <div className={`h-48 ${template.image}`}></div>
+            <div 
+              key={i} 
+              className="rounded-lg overflow-hidden border border-white/10 group hover:shadow-lg transition-all backdrop-blur-md bg-card/20 animate-on-scroll opacity-0 glow-effect"
+              style={{ animationDelay: `${template.delay}ms` }}
+            >
+              <div className="h-48 relative">
+                <RotatingCard color={template.color} />
+              </div>
               <div className="p-6">
                 <h3 className="font-semibold text-xl mb-2">{template.title}</h3>
                 <p className="text-muted-foreground mb-4">{template.description}</p>
@@ -135,23 +176,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 md:px-10 lg:px-20 bg-builder-accent/10">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold">Start Building Your Web3 App Today</h2>
+      <section className="py-20 px-6 md:px-10 lg:px-20 neo-blur">
+        <div className="max-w-4xl mx-auto text-center space-y-6 animate-on-scroll opacity-0">
+          <h2 className="text-3xl md:text-4xl font-bold text-gradient">Start Building Your Web3 App Today</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join thousands of creators and businesses building on the blockchain without writing a single line of code.
           </p>
-          <Button onClick={connectWallet} size="lg" className="mt-4 px-8">
+          <Button onClick={connectWallet} size="lg" className="mt-4 px-8 animate-glow bg-builder-accent hover:bg-builder-accent/80">
             Connect Wallet to Start
           </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-background border-t py-12 px-6 md:px-10 lg:px-20">
+      <footer className="border-t border-white/10 py-12 px-6 md:px-10 lg:px-20 neo-blur">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-semibold mb-3">BlockBuilder</h3>
+            <h3 className="font-semibold mb-3 text-gradient">BlockBuilder</h3>
             <p className="text-sm text-muted-foreground">
               The no-code platform for Web3 development
             </p>
@@ -159,29 +200,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
           <div>
             <h4 className="font-medium mb-3">Product</h4>
             <ul className="space-y-2">
-              <li><Link to="/features" className="text-sm text-muted-foreground hover:text-foreground">Features</Link></li>
-              <li><Link to="/templates" className="text-sm text-muted-foreground hover:text-foreground">Templates</Link></li>
-              <li><Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground">Pricing</Link></li>
+              <li><Link to="/features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</Link></li>
+              <li><Link to="/templates" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Templates</Link></li>
+              <li><Link to="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-medium mb-3">Resources</h4>
             <ul className="space-y-2">
-              <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-foreground">Documentation</Link></li>
-              <li><Link to="/guides" className="text-sm text-muted-foreground hover:text-foreground">Guides</Link></li>
-              <li><Link to="/support" className="text-sm text-muted-foreground hover:text-foreground">Support</Link></li>
+              <li><Link to="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Documentation</Link></li>
+              <li><Link to="/guides" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Guides</Link></li>
+              <li><Link to="/support" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Support</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-medium mb-3">Company</h4>
             <ul className="space-y-2">
-              <li><Link to="/about" className="text-sm text-muted-foreground hover:text-foreground">About Us</Link></li>
-              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground">Blog</Link></li>
-              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground">Contact</Link></li>
+              <li><Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About Us</Link></li>
+              <li><Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link></li>
+              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-10 pt-8 border-t text-center">
+        <div className="mt-10 pt-8 border-t border-white/10 text-center">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} BlockBuilder. All rights reserved.
           </p>

@@ -7,38 +7,6 @@
 
 @layer base {
   :root {
-    --background: 260 25% 98%;
-    --foreground: 260 15% 15%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 260 15% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 260 15% 15%;
-
-    --primary: 260 35% 55%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 260 30% 45%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 260 15% 90%;
-    --muted-foreground: 260 10% 45%;
-
-    --accent: 260 85% 66%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 260 15% 85%;
-    --input: 260 15% 85%;
-    --ring: 260 35% 55%;
-
-    --radius: 0.5rem;
-  }
- 
-  .dark {
     --background: 260 25% 10%;
     --foreground: 260 15% 90%;
  
@@ -66,6 +34,38 @@
     --border: 260 15% 30%;
     --input: 260 15% 30%;
     --ring: 260 35% 55%;
+
+    --radius: 0.5rem;
+  }
+
+  .light {
+    --background: 260 25% 98%;
+    --foreground: 260 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 260 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 260 15% 15%;
+
+    --primary: 260 35% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 30% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 260 15% 90%;
+    --muted-foreground: 260 10% 45%;
+
+    --accent: 260 85% 66%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 260 15% 85%;
+    --input: 260 15% 85%;
+    --ring: 260 35% 55%;
   }
 }
 
@@ -79,15 +79,18 @@
   }
 
   .glass {
-    @apply bg-white/80 backdrop-blur-sm dark:bg-black/60;
+    @apply bg-black/40 backdrop-blur-sm dark:bg-black/60;
+  }
+
+  .neo-blur {
+    @apply backdrop-blur-2xl bg-black/40 border border-white/10;
   }
 
   .builder-grid {
     background-image: 
-      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
-    @apply dark:bg-gray-900/30 dark:bg-opacity-20;
   }
 }
 
@@ -116,4 +119,55 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+.text-gradient {
+  @apply bg-gradient-to-br from-white via-white/90 to-white/70 bg-clip-text text-transparent;
+}
+
+.animated-bg {
+  background: linear-gradient(45deg, #1A1F2C, #432874, #7E69AB);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* For 3D model canvas */
+.three-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background: transparent;
+}
+
+.hover-effect {
+  transition: all 0.3s ease;
+}
+
+.hover-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.2);
+}
+
+.glow-effect {
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-effect:hover {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
 }

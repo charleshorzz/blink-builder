@@ -16,7 +16,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({ customizable = false, o
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Vote size={20} className="text-builder-accent" />
@@ -37,7 +37,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({ customizable = false, o
                 <RadioGroupItem value="development" id="development" />
                 <Label htmlFor="development">Fund development initiatives</Label>
               </div>
-              <Progress value={40} className="h-2" />
+              <Progress value={40} className="h-2 bg-muted" />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>40%</span>
                 <span>400 votes</span>
@@ -49,7 +49,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({ customizable = false, o
                 <RadioGroupItem value="marketing" id="marketing" />
                 <Label htmlFor="marketing">Increase marketing efforts</Label>
               </div>
-              <Progress value={25} className="h-2" />
+              <Progress value={25} className="h-2 bg-muted" />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>25%</span>
                 <span>250 votes</span>
@@ -61,7 +61,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({ customizable = false, o
                 <RadioGroupItem value="reserve" id="reserve" />
                 <Label htmlFor="reserve">Keep in reserve</Label>
               </div>
-              <Progress value={35} className="h-2" />
+              <Progress value={35} className="h-2 bg-muted" />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>35%</span>
                 <span>350 votes</span>
@@ -72,9 +72,9 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({ customizable = false, o
       </CardContent>
       <CardFooter className="flex justify-between">
         {customizable && (
-          <Button variant="outline" onClick={onCustomize}>Customize</Button>
+          <Button variant="outline" onClick={onCustomize} className="gradient-border">Customize</Button>
         )}
-        <Button disabled={!selectedOption} className="w-full">Cast Vote</Button>
+        <Button disabled={!selectedOption} className="w-full gradient-border bg-builder-accent hover:bg-builder-accent/80">Cast Vote</Button>
       </CardFooter>
     </Card>
   );
