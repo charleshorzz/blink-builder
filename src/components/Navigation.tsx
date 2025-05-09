@@ -15,10 +15,12 @@ const Navigation: React.FC<NavigationProps> = ({
   return (
     <header className="w-full py-4 px-6 flex items-center justify-between neo-blur fixed top-0 left-0 right-0 z-50 border-b border-white/10">
       <div className=" items-center gap-2">
-        <Link to="/" className="flex items-baseline gap-2">
-          <div className="h-8 w-8 bg-builder-accent rounded-md flex items-center justify-center animate-pulse-light">
-            <div className="h-3 w-3 bg-white rounded-sm"></div>
-          </div>
+        <Link to="/" className="flex items-center gap-2">
+          <img
+            src="logo-white.png"
+            alt="Logo"
+            className="h-[1.25rem] w-[1.25rem] rounded-full object-cover"
+          />
           <span className="font-bold text-xl tracking-tight text-gradient">
             BlockBuilder
           </span>
