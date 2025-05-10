@@ -9,7 +9,59 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      user: {
+        Row: {
+          created_at: string
+          id: number
+          updated_at: string | null
+          wallet_address: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          updated_at?: string | null
+          wallet_address: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          updated_at?: string | null
+          wallet_address?: string
+        }
+        Relationships: []
+      }
+      user_blink: {
+        Row: {
+          created_at: string
+          id: number
+          template_id: number | null
+          updated_at: string | null
+          user_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          template_id?: number | null
+          updated_at?: string | null
+          user_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          template_id?: number | null
+          updated_at?: string | null
+          user_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_blink_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
