@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Navigation from '@/components/Navigation';
-import { Button } from "@/components/ui/button";
-import TemplateImage from '@/components/TemplateImage';
+import Navigation from '@/app/components/Navigation';
+import { Button } from "@/app/components/ui/button";
+import TemplateImage from '@/app/components/TemplateImage';
 
 const TemplatesPage = () => {
   // Mock function for connecting wallet
