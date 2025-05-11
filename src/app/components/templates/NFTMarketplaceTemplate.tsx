@@ -1,18 +1,18 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/button";
+} from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/app/components/ui/tabs";
-import { ShoppingCart } from "lucide-react";
+} from '@/app/components/ui/tabs';
+import { ShoppingCart } from 'lucide-react';
 
 interface NFTMarketplaceTemplateProps {
   customizable?: boolean;
@@ -24,7 +24,8 @@ const NFTMarketplaceTemplate: React.FC<NFTMarketplaceTemplateProps> = ({
   onCustomize,
 }) => {
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -63,8 +64,8 @@ const NFTMarketplaceTemplate: React.FC<NFTMarketplaceTemplateProps> = ({
                   <div
                     className={`h-32 bg-gradient-to-br ${
                       item % 2 === 0
-                        ? "from-purple-500/20 to-blue-500/20"
-                        : "from-pink-500/20 to-purple-500/20"
+                        ? 'from-purple-500/20 to-blue-500/20'
+                        : 'from-pink-500/20 to-purple-500/20'
                     }`}
                   ></div>
                   <div className="p-3">

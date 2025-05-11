@@ -22,7 +22,8 @@ const SwapTemplate: React.FC<SwapTemplateProps> = ({
   onCustomize,
 }) => {
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Layers size={20} className="text-builder-accent" />

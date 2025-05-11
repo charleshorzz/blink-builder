@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardContent,
@@ -6,15 +6,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/button";
+} from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/app/components/ui/tabs";
-import { Layers } from "lucide-react";
+} from '@/app/components/ui/tabs';
+import { Layers } from 'lucide-react';
 
 interface GamingTemplateProps {
   customizable?: boolean;
@@ -26,7 +26,8 @@ const GamingTemplate: React.FC<GamingTemplateProps> = ({
   onCustomize,
 }) => {
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Layers size={20} className="text-builder-accent" />
@@ -52,13 +53,13 @@ const GamingTemplate: React.FC<GamingTemplateProps> = ({
             <div className="grid grid-cols-2 gap-4">
               {[
                 {
-                  name: "Crypto Raiders",
-                  players: "2.5K",
-                  rewards: "0.05 ETH",
+                  name: 'Crypto Raiders',
+                  players: '2.5K',
+                  rewards: '0.05 ETH',
                 },
-                { name: "Block Battles", players: "1.8K", rewards: "180 BLK" },
-                { name: "Meta Racers", players: "3.2K", rewards: "12 MRC" },
-                { name: "Dungeon DAO", players: "950", rewards: "0.02 ETH" },
+                { name: 'Block Battles', players: '1.8K', rewards: '180 BLK' },
+                { name: 'Meta Racers', players: '3.2K', rewards: '12 MRC' },
+                { name: 'Dungeon DAO', players: '950', rewards: '0.02 ETH' },
               ].map((game, i) => (
                 <div
                   key={i}
@@ -67,8 +68,8 @@ const GamingTemplate: React.FC<GamingTemplateProps> = ({
                   <div
                     className={`h-20 bg-gradient-to-br ${
                       i % 2 === 0
-                        ? "from-indigo-500/20 to-purple-500/20"
-                        : "from-purple-500/20 to-pink-500/20"
+                        ? 'from-indigo-500/20 to-purple-500/20'
+                        : 'from-purple-500/20 to-pink-500/20'
                     }`}
                   ></div>
                   <div className="p-3">

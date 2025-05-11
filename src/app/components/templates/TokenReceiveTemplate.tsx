@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardContent,
@@ -6,11 +6,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
-import { Button } from "@/app/components/ui/button";
-import { Wallet } from "lucide-react";
+} from '@/app/components/ui/card';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { Button } from '@/app/components/ui/button';
+import { Wallet } from 'lucide-react';
 
 interface TokenReceiveTemplateProps {
   customizable?: boolean;
@@ -22,7 +22,8 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
   onCustomize,
 }) => {
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Wallet size={20} className="text-builder-accent" />

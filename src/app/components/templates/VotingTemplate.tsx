@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -6,12 +6,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/button";
-import { Vote } from "lucide-react";
-import { Progress } from "@/app/components/ui/progress";
-import { RadioGroup, RadioGroupItem } from "@/app/components/ui/radio-group";
-import { Label } from "@/app/components/ui/label";
+} from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Vote } from 'lucide-react';
+import { Progress } from '@/app/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
+import { Label } from '@/app/components/ui/label';
 
 interface VotingTemplateProps {
   customizable?: boolean;
@@ -25,7 +25,8 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Vote size={20} className="text-builder-accent" />
@@ -46,7 +47,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({
           </p>
 
           <RadioGroup
-            value={selectedOption || ""}
+            value={selectedOption || ''}
             onValueChange={setSelectedOption}
             className="space-y-4"
           >
