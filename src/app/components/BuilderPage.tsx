@@ -1,57 +1,54 @@
-import React, { useState } from "react";
-import { Button } from "@/app/components/ui/button";
+import { Button } from '@/app/components/ui/button';
+import { Card } from '@/app/components/ui/card';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { useToast } from '@/app/hooks/use-toast';
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/app/components/ui/tabs";
-import { Card } from "@/app/components/ui/card";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
-import {
-  Wallet,
-  Vote,
-  ShoppingCart,
+  ArrowRightLeft,
+  Dices,
+  HandCoins,
   Layers,
-  Home,
   Settings,
-} from "lucide-react";
-import TokenReceiveTemplate from "./templates/TokenReceiveTemplate";
-import VotingTemplate from "./templates/VotingTemplate";
-import NFTMarketplaceTemplate from "./templates/NFTMarketplaceTemplate";
-import SellTokensTemplate from "./templates/SellTokensTemplate";
-import GamblingTemplate from "./templates/GamblingTemplate";
-import GamingTemplate from "./templates/GamingTemplate";
-import { useToast } from "@/app/hooks/use-toast";
-import TemplateCardScene from "./3D/TemplateCardScene";
+  ShoppingCart,
+  Vote,
+  Wallet,
+} from 'lucide-react';
+import React, { useState } from 'react';
+import GamblingTemplate from './templates/GamblingTemplate';
+import GamingTemplate from './templates/GamingTemplate';
+import NFTMarketplaceTemplate from './templates/NFTMarketplaceTemplate';
+import SellTokensTemplate from './templates/SellTokensTemplate';
+import SwapTemplate from './templates/SwapTemplate';
+import TokenReceiveTemplate from './templates/TokenReceiveTemplate';
+import VotingTemplate from './templates/VotingTemplate';
 
 interface BuilderPageProps {
   isLoggedIn: boolean;
 }
 
 type TemplateType =
-  | "token-receive"
-  | "voting"
-  | "nft-marketplace"
-  | "sell-tokens"
-  | "gambling"
-  | "gaming"
+  | 'token-receive'
+  | 'voting'
+  | 'nft-marketplace'
+  | 'sell-tokens'
+  | 'gambling'
+  | 'gaming'
+  | 'swap'
   | null;
 
 const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
-  const [activeTab, setActiveTab] = useState("receive");
-  const [projectName, setProjectName] = useState("My Web3 App");
-  const [link, setLink] = useState("");
+  const [activeTab, setActiveTab] = useState('receive');
+  const [projectName, setProjectName] = useState('My Web3 App');
+  const [link, setLink] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>(null);
   const { toast } = useToast();
 
   const generateLink = () => {
     if (!selectedTemplate) {
       toast({
-        title: "No Template Selected",
-        description: "Please select a template first.",
-        variant: "destructive",
+        title: 'No Template Selected',
+        description: 'Please select a template first.',
+        variant: 'destructive',
       });
       return;
     }
@@ -61,25 +58,27 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
     setLink(`https://blockbuilder.app/${randomId}`);
 
     toast({
-      title: "Link Generated!",
-      description: "Your application link has been created successfully.",
+      title: 'Link Generated!',
+      description: 'Your application link has been created successfully.',
     });
   };
 
   const renderSelectedTemplate = () => {
     switch (selectedTemplate) {
-      case "token-receive":
+      case 'token-receive':
         return <TokenReceiveTemplate customizable={true} />;
-      case "voting":
+      case 'voting':
         return <VotingTemplate customizable={true} />;
-      case "nft-marketplace":
+      case 'nft-marketplace':
         return <NFTMarketplaceTemplate customizable={true} />;
-      case "sell-tokens":
+      case 'sell-tokens':
         return <SellTokensTemplate customizable={true} />;
-      case "gambling":
+      case 'gambling':
         return <GamblingTemplate customizable={true} />;
-      case "gaming":
+      case 'gaming':
         return <GamingTemplate customizable={true} />;
+      case 'swap':
+        return <SwapTemplate customizable={true} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center text-center p-6 h-full">
@@ -93,6 +92,21 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
           </div>
         );
     }
+  };
+
+  // Identidy the template description
+  const templateDescriptions: Record<Exclude<TemplateType, null>, string> = {
+    'token-receive':
+      'A template that lets you receive SOL tokens through blockchain link.',
+    voting:
+      'A template for creating decentralized voting systems on the blockchain.',
+    'nft-marketplace':
+      'A ready-made NFT marketplace where users can mint, buy, and sell NFTs.',
+    'sell-tokens': 'A customizable template to create and manage token sales.',
+    gambling: 'A framework for building crypto-powered gambling applications.',
+    gaming:
+      'A template for integrating blockchain features into gaming experiences.',
+    swap: 'A template to create a decentralized token swapping interface.',
   };
 
   return (
@@ -114,7 +128,7 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
             onClick={generateLink}
             disabled={!selectedTemplate}
             className={`gradient-border ${
-              selectedTemplate ? "animate-glow" : ""
+              selectedTemplate ? 'animate-glow' : ''
             } bg-builder-accent hover:bg-builder-accent/80`}
           >
             Generate Link
@@ -130,9 +144,9 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
           <div className="space-y-3">
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "token-receive" ? "gradient-border" : ""
+                selectedTemplate === 'token-receive' ? 'gradient-border' : ''
               }`}
-              onClick={() => setSelectedTemplate("token-receive")}
+              onClick={() => setSelectedTemplate('token-receive')}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
@@ -144,9 +158,9 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "voting" ? "gradient-border" : ""
+                selectedTemplate === 'voting' ? 'gradient-border' : ''
               }`}
-              onClick={() => setSelectedTemplate("voting")}
+              onClick={() => setSelectedTemplate('voting')}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
@@ -158,9 +172,9 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "nft-marketplace" ? "gradient-border" : ""
+                selectedTemplate === 'nft-marketplace' ? 'gradient-border' : ''
               }`}
-              onClick={() => setSelectedTemplate("nft-marketplace")}
+              onClick={() => setSelectedTemplate('nft-marketplace')}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
@@ -172,13 +186,13 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "sell-tokens" ? "gradient-border" : ""
+                selectedTemplate === 'sell-tokens' ? 'gradient-border' : ''
               }`}
-              onClick={() => setSelectedTemplate("sell-tokens")}
+              onClick={() => setSelectedTemplate('sell-tokens')}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
+                  <HandCoins size={18} />
                 </div>
                 <span className="text-sm font-medium">Sell Tokens</span>
               </div>
@@ -186,9 +200,9 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "gambling" ? "gradient-border" : ""
+                selectedTemplate === 'gambling' ? 'gradient-border' : ''
               }`}
-              onClick={() => setSelectedTemplate("gambling")}
+              onClick={() => setSelectedTemplate('gambling')}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
@@ -200,15 +214,29 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "gaming" ? "gradient-border" : ""
+                selectedTemplate === 'gaming' ? 'gradient-border' : ''
               }`}
-              onClick={() => setSelectedTemplate("gaming")}
+              onClick={() => setSelectedTemplate('gaming')}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
+                  <Dices size={18} />
                 </div>
                 <span className="text-sm font-medium">Gaming</span>
+              </div>
+            </Card>
+
+            <Card
+              className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
+                selectedTemplate === 'swap' ? 'gradient-border' : ''
+              }`}
+              onClick={() => setSelectedTemplate('swap')}
+            >
+              <div className="flex items-center gap-3">
+                <div className="text-builder-primary">
+                  <ArrowRightLeft size={18} />
+                </div>
+                <span className="text-sm font-medium">Swap</span>
               </div>
             </Card>
           </div>
@@ -217,14 +245,16 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Preview Area */}
-          <div className="flex-1 p-6 overflow-y-auto builder-grid">
+          <div className="flex-1 px-6 py-4 overflow-y-auto builder-grid">
             <div className="container mx-auto">
               <div className="mb-6">
-                <h2 className="text-xl font-medium mb-3 text-gradient">
-                  Template Preview
+                <h2 className="text-2xl font-medium mb-3 text-gradient">
+                  {selectedTemplate?.toUpperCase() || 'Template Preview'}
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Select a template from the sidebar to preview.
+                  {selectedTemplate
+                    ? templateDescriptions[selectedTemplate]
+                    : 'Select a template from the sidebar to preview.'}
                 </p>
               </div>
 
@@ -247,7 +277,7 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
                       className="ml-2"
                       onClick={() => {
                         navigator.clipboard.writeText(link);
-                        toast({ title: "Copied to clipboard" });
+                        toast({ title: 'Copied to clipboard' });
                       }}
                     >
                       Copy
@@ -262,42 +292,42 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
           <div className="md:hidden border-t border-white/10 bg-background/30 backdrop-blur-md p-2">
             <div className="flex justify-around">
               <Button
-                variant={activeTab === "receive" ? "default" : "ghost"}
+                variant={activeTab === 'receive' ? 'default' : 'ghost'}
                 size="sm"
                 className="flex-1"
-                onClick={() => setActiveTab("receive")}
+                onClick={() => setActiveTab('receive')}
               >
                 <Wallet size={20} />
               </Button>
               <Button
-                variant={activeTab === "voting" ? "default" : "ghost"}
+                variant={activeTab === 'voting' ? 'default' : 'ghost'}
                 size="sm"
                 className="flex-1"
-                onClick={() => setActiveTab("voting")}
+                onClick={() => setActiveTab('voting')}
               >
                 <Vote size={20} />
               </Button>
               <Button
-                variant={activeTab === "nft" ? "default" : "ghost"}
+                variant={activeTab === 'nft' ? 'default' : 'ghost'}
                 size="sm"
                 className="flex-1"
-                onClick={() => setActiveTab("nft")}
+                onClick={() => setActiveTab('nft')}
               >
                 <ShoppingCart size={20} />
               </Button>
               <Button
-                variant={activeTab === "more" ? "default" : "ghost"}
+                variant={activeTab === 'more' ? 'default' : 'ghost'}
                 size="sm"
                 className="flex-1"
-                onClick={() => setActiveTab("more")}
+                onClick={() => setActiveTab('more')}
               >
                 <Layers size={20} />
               </Button>
               <Button
-                variant={activeTab === "settings" ? "default" : "ghost"}
+                variant={activeTab === 'settings' ? 'default' : 'ghost'}
                 size="sm"
                 className="flex-1"
-                onClick={() => setActiveTab("settings")}
+                onClick={() => setActiveTab('settings')}
               >
                 <Settings size={20} />
               </Button>
@@ -305,69 +335,69 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             {/* Mobile Template Selection */}
             <div className="p-4">
-              {activeTab === "receive" && (
+              {activeTab === 'receive' && (
                 <div className="space-y-4">
                   <h3 className="font-medium">Token Receiving</h3>
                   <Button
                     className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("token-receive")}
+                    onClick={() => setSelectedTemplate('token-receive')}
                   >
                     <Wallet size={16} className="mr-2" />
                     Use Token Receive Template
                   </Button>
                 </div>
               )}
-              {activeTab === "voting" && (
+              {activeTab === 'voting' && (
                 <div className="space-y-4">
                   <h3 className="font-medium">DAO Voting</h3>
                   <Button
                     className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("voting")}
+                    onClick={() => setSelectedTemplate('voting')}
                   >
                     <Vote size={16} className="mr-2" />
                     Use Voting Template
                   </Button>
                 </div>
               )}
-              {activeTab === "nft" && (
+              {activeTab === 'nft' && (
                 <div className="space-y-4">
                   <h3 className="font-medium">NFT Marketplace</h3>
                   <Button
                     className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("nft-marketplace")}
+                    onClick={() => setSelectedTemplate('nft-marketplace')}
                   >
                     <ShoppingCart size={16} className="mr-2" />
                     Use NFT Marketplace
                   </Button>
                 </div>
               )}
-              {activeTab === "more" && (
+              {activeTab === 'more' && (
                 <div className="space-y-4">
                   <h3 className="font-medium">More Templates</h3>
                   <Button
                     className="w-full justify-start mb-2"
-                    onClick={() => setSelectedTemplate("sell-tokens")}
+                    onClick={() => setSelectedTemplate('sell-tokens')}
                   >
                     <Layers size={16} className="mr-2" />
                     Use Sell Tokens Template
                   </Button>
                   <Button
                     className="w-full justify-start mb-2"
-                    onClick={() => setSelectedTemplate("gambling")}
+                    onClick={() => setSelectedTemplate('gambling')}
                   >
                     <Layers size={16} className="mr-2" />
                     Use Gambling Template
                   </Button>
                   <Button
                     className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("gaming")}
+                    onClick={() => setSelectedTemplate('gaming')}
                   >
                     <Layers size={16} className="mr-2" />
                     Use Gaming Template
                   </Button>
                 </div>
               )}
-              {activeTab === "settings" && (
+              {activeTab === 'settings' && (
                 <div className="space-y-4">
                   <h3 className="font-medium">Settings</h3>
                   <div className="space-y-3">
