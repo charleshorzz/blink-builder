@@ -36,7 +36,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
 
   return (
     <div className="min-h-screen flex flex-col animated-bg">
-      <Navigation isLoggedIn={false} connectWallet={connectWallet} />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 md:px-10 lg:px-20 flex flex-col md:flex-row items-center gap-10 lg:gap-20">
