@@ -28,6 +28,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
+import { useToast } from "@/app/hooks/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 interface TokenReceiveTemplateProps {
   customizable?: boolean;
@@ -66,6 +68,8 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
   customizable = false,
   onCustomize,
 }) => {
+  const { toast } = useToast();
+
   // The route api with the GET & POST logic
   const blinkApiUrl = "http://localhost:3000/api/actions/donate-sol";
 
@@ -89,10 +93,36 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
   });
 
   // handle submit
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-    refresh();
-    // continue with route
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("amounts", JSON.stringify(data.amounts));
+
+    if (data.file) {
+      formData.append("file", data.file);
+    }
+
+    try {
+      const response = await fetch("../../api/blink-config", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
+      }
+      toast({
+        title: "Scheduled: Catch up ",
+        description: "Friday, February 10, 2023 at 5:57 PM",
+        action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
+      });
+      refresh();
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 
   return (

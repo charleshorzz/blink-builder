@@ -41,79 +41,37 @@ export const OPTIONS = async () => {
 };
 
 // GET endpoint returns the Blink metadata (JSON) and UI configuration
-export const GET = async (req: Request) => {
-  // This JSON is used to render the Blink UI
-  const response: ActionGetResponse = {
-    type: "action",
-    icon: `${new URL("/solana-pic.png", req.url).toString()}`,
-    label: "1 SOL",
-    title: "Donate SOL",
-    description:
-      "This Blink demonstrates how to donate SOL on the Solana blockchain. It is a part of the official Blink Starter Guides by Dialect Labs.",
-    // Links is used if you have multiple actions or if you need more than one params
-    links: {
-      actions: [
-        {
-          // Defines this as a blockchain transaction
-          type: "transaction",
-          label: "0.01 SOL",
-          // This is the endpoint for the POST request
-          href: `/api/actions/donate-sol?amount=0.01`,
-        },
-        {
-          type: "transaction",
-          label: "0.05 SOL",
-          href: `/api/actions/donate-sol?amount=0.05`,
-        },
-        {
-          type: "transaction",
-          label: "0.1 SOL",
-          href: `/api/actions/donate-sol?amount=0.1`,
-        },
-        {
-          // Example for a custom input field
-          type: "transaction",
-          href: `/api/actions/donate-sol?amount={amount}`,
-          label: "Donate",
-          parameters: [
-            {
-              name: "amount",
-              label: "Enter a custom SOL amount",
-              type: "number",
-            },
-          ],
-        },
-      ],
-    },
-  };
-
-  // Return the response with proper headers
-  return new Response(JSON.stringify(response), {
-    status: 200,
-    headers,
-  });
-};
 // export const GET = async (req: Request) => {
-//   const configRes = await getConfig();
-//   const config = await configRes.json();
-
+//   // This JSON is used to render the Blink UI
 //   const response: ActionGetResponse = {
 //     type: "action",
+//     icon: `${new URL("/solana-pic.png", req.url).toString()}`,
 //     label: "1 SOL",
-//     icon: config.icon || `${new URL("/solana-pic.png", req.url).toString()}`,
-//     title: config.title || "Example tittle",
-//     description: config.description || "Default description",
+//     title: "Donate SOL",
+//     description:
+//       "This Blink demonstrates how to donate SOL on the Solana blockchain. It is a part of the official Blink Starter Guides by Dialect Labs.",
+//     // Links is used if you have multiple actions or if you need more than one params
 //     links: {
 //       actions: [
-//         // The ... makes sure each mapped object is added as a flat element in the actions array — not nested.
-//         ...(config.amounts || ["0.01", "0.05", "0.1"]).map(
-//           (amount: string) => ({
-//             type: "transaction",
-//             label: `${amount} SOL`,
-//             href: `/api/actions/donate-sol?amount=${amount}`,
-//           })
-//         ),
 //         {
+//           // Defines this as a blockchain transaction
+//           type: "transaction",
+//           label: "0.01 SOL",
+//           // This is the endpoint for the POST request
+//           href: `/api/actions/donate-sol?amount=0.01`,
+//         },
+//         {
+//           type: "transaction",
+//           label: "0.05 SOL",
+//           href: `/api/actions/donate-sol?amount=0.05`,
+//         },
+//         {
+//           type: "transaction",
+//           label: "0.1 SOL",
+//           href: `/api/actions/donate-sol?amount=0.1`,
+//         },
+//         {
+//           // Example for a custom input field
 //           type: "transaction",
 //           href: `/api/actions/donate-sol?amount={amount}`,
 //           label: "Donate",
@@ -129,11 +87,54 @@ export const GET = async (req: Request) => {
 //     },
 //   };
 
+//   // Return the response with proper headers
 //   return new Response(JSON.stringify(response), {
 //     status: 200,
 //     headers,
 //   });
 // };
+
+export const GET = async (req: Request) => {
+  const configRes = await getConfig();
+  const config = await configRes.json();
+
+  const response: ActionGetResponse = {
+    type: "action",
+    label: "1 SOL",
+    icon: config.file || `${new URL("/solana-pic.png", req.url).toString()}`,
+    title: config.title || "Example tittle",
+    description: config.description || "Default description",
+    links: {
+      actions: [
+        // The ... makes sure each mapped object is added as a flat element in the actions array — not nested.
+        ...(config.amounts || ["0.01", "0.05", "0.1"]).map(
+          (amount: string) => ({
+            type: "transaction",
+            label: `${amount} SOL`,
+            href: `/api/actions/donate-sol?amount=${amount}`,
+          })
+        ),
+        {
+          type: "transaction",
+          href: `/api/actions/donate-sol?amount={amount}`,
+          label: "Donate",
+          parameters: [
+            {
+              name: "amount",
+              label: "Enter a custom SOL amount",
+              type: "number",
+            },
+          ],
+        },
+      ],
+    },
+  };
+
+  return new Response(JSON.stringify(response), {
+    status: 200,
+    headers,
+  });
+};
 
 // POST endpoint handles the actual transaction creation
 export const POST = async (req: Request) => {
