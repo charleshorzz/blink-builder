@@ -17,7 +17,7 @@ const DocsPage = () => {
         <div className="prose prose-invert max-w-3xl">
           <h2>Getting Started</h2>
           <p>
-            BlockBuilder is a no-code platform for creating Web3 applications.
+            Blink Builder is a no-code platform for creating Web3 applications.
             This documentation will guide you through using our platform
             effectively.
           </p>

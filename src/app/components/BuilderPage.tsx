@@ -16,6 +16,7 @@ import {
   Layers,
   Home,
   Settings,
+  Link,
 } from "lucide-react";
 import TokenReceiveTemplate from "./templates/TokenReceiveTemplate";
 import VotingTemplate from "./templates/VotingTemplate";
@@ -25,10 +26,7 @@ import GamblingTemplate from "./templates/GamblingTemplate";
 import GamingTemplate from "./templates/GamingTemplate";
 import { useToast } from "@/app/hooks/use-toast";
 import TemplateCardScene from "./3D/TemplateCardScene";
-
-interface BuilderPageProps {
-  isLoggedIn: boolean;
-}
+import Navigation from "./Navigation";
 
 type TemplateType =
   | "token-receive"
@@ -39,7 +37,7 @@ type TemplateType =
   | "gaming"
   | null;
 
-const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
+const BuilderPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("receive");
   const [projectName, setProjectName] = useState("My Web3 App");
   const [link, setLink] = useState("");
@@ -97,33 +95,10 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
   return (
     <div className="flex flex-col min-h-screen animated-bg">
-      {/* Header */}
-      <header className="bg-background/30 backdrop-blur-md border-b border-white/10 py-4 px-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 bg-builder-accent rounded-md flex items-center justify-center animate-pulse-light">
-            <div className="h-3 w-3 bg-white rounded-sm"></div>
-          </div>
-          <Input
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            className="font-medium text-lg border-transparent focus-visible:border-input bg-transparent w-[200px]"
-          />
-        </div>
-        <div className="flex items-center gap-4">
-          <Button
-            onClick={generateLink}
-            disabled={!selectedTemplate}
-            className={`gradient-border ${
-              selectedTemplate ? "animate-glow" : ""
-            } bg-builder-accent hover:bg-builder-accent/80`}
-          >
-            Generate Link
-          </Button>
-        </div>
-      </header>
+      <Navigation />
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden pt-20">
         {/* Left Sidebar - Templates */}
         <div className="w-64 border-r border-white/10 bg-background/30 backdrop-blur-md p-4 overflow-y-auto hidden md:block">
           <h2 className="font-medium mb-4 text-gradient">Templates</h2>
