@@ -259,27 +259,7 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
               </div>
 
               {selectedTemplate ? (
-                <div className="flex flex-col lg:flex-row gap-5">
-                  {/* Left: User Input */}
-                  <div className="flex-1">{renderSelectedTemplate()}</div>
-
-                  {/* Blink UI */}
-                  {selectedTemplate && (
-                    <div className="flex-1 border rounded-lg p-4 bg-gray-50 dark:bg-gray-800 shadow-sm">
-                      <h2 className="text-lg font-semibold mb-2 text-builder-primary">
-                        Swap
-                      </h2>
-                      <p className="text-sm text-muted-foreground">
-                        Configure your token swap settings here.
-                      </p>
-                      <div className="mt-4">
-                        <Button variant="outline" size="sm">
-                          Add Token Pair
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                renderSelectedTemplate()
               ) : (
                 <Card className="p-6 min-h-[400px] backdrop-blur-sm bg-card/50 border-white/10">
                   {renderSelectedTemplate()}
