@@ -7,7 +7,7 @@ const BlinkSkeleton = () => {
       {/* <div className="flex flex-col space-y-3"> */}
       <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10 rounded-xl">
         <CardHeader>
-          <Skeleton className="h-60 rounded-xl" />
+          <Skeleton className="h-[300px] rounded-xl" />
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
