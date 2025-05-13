@@ -27,6 +27,9 @@ import GamingTemplate from "./templates/GamingTemplate";
 import { useToast } from "@/app/hooks/use-toast";
 import TemplateCardScene from "./3D/TemplateCardScene";
 import Navigation from "./Navigation";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
+import { Transaction } from "@solana/web3.js";
 
 type TemplateType =
   | "token-receive"
@@ -43,6 +46,31 @@ const BuilderPage: React.FC = () => {
   const [link, setLink] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>(null);
   const { toast } = useToast();
+  const { publicKey, connected, sendTransaction } = useWallet();
+  const { setVisible } = useWalletModal();
+  const { connection } = useConnection();
+
+  // Function to handle the Play Now click from GamingTemplate
+  const handlePlayGame = async (gameParams: {
+    name: string;
+    amount: number;
+    choice: string;
+  }) => {
+    console.log("Play game clicked:", gameParams.name);
+    console.log("Params:", gameParams);
+
+    if (!connected || !publicKey) {
+      toast({
+        title: "Wallet Not Connected",
+        description: "Please connect your wallet to play games.",
+        variant: "destructive",
+      });
+      setVisible(true); // Open wallet modal
+      return; // Stop the process if not connected
+    }
+
+    console.log("User connected:", publicKey.toBase58());
+  };
 
   const generateLink = () => {
     if (!selectedTemplate) {
@@ -71,7 +99,7 @@ const BuilderPage: React.FC = () => {
       case "voting":
         return <VotingTemplate customizable={true} />;
       case "nft-marketplace":
-        return <NFTMarketplaceTemplate customizable={true} />;
+        return <NFTMarketplaceTemplate />;
       case "sell-tokens":
         return <SellTokensTemplate customizable={true} />;
       case "gambling":
@@ -356,7 +384,13 @@ const BuilderPage: React.FC = () => {
                       />
                     </div>
                     <Button
-                      onClick={generateLink}
+                      onClick={() =>
+                        handlePlayGame({
+                          name: "rock-paper-scissors",
+                          amount: 0.01,
+                          choice: "rock",
+                        })
+                      }
                       disabled={!selectedTemplate}
                       className="w-full"
                     >
