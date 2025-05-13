@@ -12,12 +12,12 @@ import { Label } from '@/app/components/ui/label';
 import { Button } from '@/app/components/ui/button';
 import { Layers } from 'lucide-react';
 
-interface SellTokensTemplateProps {
+interface SwapTemplateProps {
   customizable?: boolean;
   onCustomize?: () => void;
 }
 
-const SellTokensTemplate: React.FC<SellTokensTemplateProps> = ({
+const SwapTemplate: React.FC<SwapTemplateProps> = ({
   customizable = false,
   onCustomize,
 }) => {
@@ -67,4 +67,4 @@ const SellTokensTemplate: React.FC<SellTokensTemplateProps> = ({
   );
 };
 
-export default SellTokensTemplate;
+export default SwapTemplate;

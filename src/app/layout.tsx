@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { SupabaseProvider } from "./providers";
-import { WalletContextProvider } from "./components/providers/WalletProviderContext";
+import type { Metadata } from 'next';
+import { Aldrich } from 'next/font/google';
+import { WalletContextProvider } from './components/providers/WalletProviderContext';
+import './globals.css';
+import { SupabaseProvider } from './providers';
 
-const inter = Inter({ subsets: ["latin"] });
+const aldrich = Aldrich({ subsets: ['latin'], weight: '400' });
 
 export const metadata: Metadata = {
-  title: "Blink Builder",
-  description: "Your application description",
+  title: 'Blink Builder',
+  description: 'Your application description',
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={aldrich.className}>
         <WalletContextProvider>
           <SupabaseProvider>{children}</SupabaseProvider>
         </WalletContextProvider>

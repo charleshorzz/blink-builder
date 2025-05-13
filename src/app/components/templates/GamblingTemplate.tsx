@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -6,12 +6,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/app/components/ui/card";
-import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
-import { Layers } from "lucide-react";
-import { Progress } from "@/app/components/ui/progress";
+} from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import { Input } from '@/app/components/ui/input';
+import { Label } from '@/app/components/ui/label';
+import { Layers } from 'lucide-react';
+import { Progress } from '@/app/components/ui/progress';
 
 interface GamblingTemplateProps {
   customizable?: boolean;
@@ -22,7 +22,7 @@ const GamblingTemplate: React.FC<GamblingTemplateProps> = ({
   customizable = false,
   onCustomize,
 }) => {
-  const [betAmount, setBetAmount] = useState<string>("0.1");
+  const [betAmount, setBetAmount] = useState<string>('0.1');
   const [probability, setProbability] = useState<number>(50);
 
   // Calculate potential winnings based on probability
@@ -30,7 +30,8 @@ const GamblingTemplate: React.FC<GamblingTemplateProps> = ({
   const potentialWin = parseFloat(betAmount) * multiplier;
 
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Layers size={20} className="text-builder-accent" />

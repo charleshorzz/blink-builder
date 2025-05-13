@@ -115,7 +115,8 @@ const NFTMarketplaceTemplate: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
+    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -134,7 +135,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
               Create
             </TabsTrigger>
           </TabsList>
-
           <TabsContent value="owned" className="pt-4">
             {connected ? (
               <div>
