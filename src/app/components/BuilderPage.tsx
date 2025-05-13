@@ -1,30 +1,23 @@
-import React, { useState } from "react";
 import { Button } from "@/app/components/ui/button";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/app/components/ui/tabs";
 import { Card } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
+import { useToast } from "@/app/hooks/use-toast";
 import {
-  Wallet,
-  Vote,
-  ShoppingCart,
+  ArrowRightLeft,
+  Dices,
   Layers,
-  Home,
   Settings,
+  ShoppingCart,
+  Vote,
+  Wallet,
 } from "lucide-react";
+import React, { useState } from "react";
+import GamblingTemplate from "./templates/GamblingTemplate";
+import NFTMarketplaceTemplate from "./templates/NFTMarketplaceTemplate";
+import SwapTemplate from "./templates/SwapTemplate";
 import TokenReceiveTemplate from "./templates/TokenReceiveTemplate";
 import VotingTemplate from "./templates/VotingTemplate";
-import NFTMarketplaceTemplate from "./templates/NFTMarketplaceTemplate";
-import SellTokensTemplate from "./templates/SellTokensTemplate";
-import GamblingTemplate from "./templates/GamblingTemplate";
-import GamingTemplate from "./templates/GamingTemplate";
-import { useToast } from "@/app/hooks/use-toast";
-import TemplateCardScene from "./3D/TemplateCardScene";
 
 interface BuilderPageProps {
   isLoggedIn: boolean;
@@ -34,9 +27,8 @@ type TemplateType =
   | "token-receive"
   | "voting"
   | "nft-marketplace"
-  | "sell-tokens"
   | "gambling"
-  | "gaming"
+  | "swap"
   | null;
 
 const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
@@ -74,12 +66,10 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
         return <VotingTemplate customizable={true} />;
       case "nft-marketplace":
         return <NFTMarketplaceTemplate customizable={true} />;
-      case "sell-tokens":
-        return <SellTokensTemplate customizable={true} />;
       case "gambling":
         return <GamblingTemplate customizable={true} />;
-      case "gaming":
-        return <GamingTemplate customizable={true} />;
+      case "swap":
+        return <SwapTemplate customizable={true} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center text-center p-6 h-full">
@@ -93,6 +83,47 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
           </div>
         );
     }
+  };
+
+  // Identidy the template description
+  const templateDescriptions: Record<
+    Exclude<TemplateType, null>,
+    {
+      icon: JSX.Element;
+      title: string;
+      description: string;
+    }
+  > = {
+    "token-receive": {
+      icon: <Wallet size={20} className="text-builder-accent" />,
+      title: "Token Receive Link",
+      description:
+        "A template that lets you receive SOL tokens through a blockchain link.",
+    },
+    voting: {
+      icon: <Vote size={20} className="text-builder-accent" />,
+      title: "Decentralized Voting",
+      description:
+        "A template for creating decentralized voting systems on the blockchain.",
+    },
+    "nft-marketplace": {
+      icon: <ShoppingCart size={20} className="text-builder-accent" />,
+      title: "NFT Marketplace",
+      description:
+        "A ready-made NFT marketplace where users can mint, buy, and sell NFTs.",
+    },
+    gambling: {
+      icon: <Dices size={20} className="text-builder-accent" />,
+      title: "Crypto Gambling App",
+      description:
+        "A framework for building crypto-powered gambling applications.",
+    },
+    swap: {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "Token Swap Interface",
+      description:
+        "A template to create a decentralized token swapping interface.",
+    },
   };
 
   return (
@@ -172,27 +203,13 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "sell-tokens" ? "gradient-border" : ""
-              }`}
-              onClick={() => setSelectedTemplate("sell-tokens")}
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-builder-primary">
-                  <Layers size={18} />
-                </div>
-                <span className="text-sm font-medium">Sell Tokens</span>
-              </div>
-            </Card>
-
-            <Card
-              className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
                 selectedTemplate === "gambling" ? "gradient-border" : ""
               }`}
               onClick={() => setSelectedTemplate("gambling")}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
+                  <Dices size={18} />
                 </div>
                 <span className="text-sm font-medium">Gambling</span>
               </div>
@@ -200,15 +217,15 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "gaming" ? "gradient-border" : ""
+                selectedTemplate === "swap" ? "gradient-border" : ""
               }`}
-              onClick={() => setSelectedTemplate("gaming")}
+              onClick={() => setSelectedTemplate("swap")}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
+                  <ArrowRightLeft size={18} />
                 </div>
-                <span className="text-sm font-medium">Gaming</span>
+                <span className="text-sm font-medium">Swap</span>
               </div>
             </Card>
           </div>
@@ -217,20 +234,35 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Preview Area */}
-          <div className="flex-1 p-6 overflow-y-auto builder-grid">
+          <div className="flex-1 px-6 py-4 overflow-y-auto builder-grid">
             <div className="container mx-auto">
               <div className="mb-6">
-                <h2 className="text-xl font-medium mb-3 text-gradient">
-                  Template Preview
-                </h2>
+                <div className="flex items-center gap-2 mb-2">
+                  {selectedTemplate ? (
+                    templateDescriptions[selectedTemplate].icon
+                  ) : (
+                    <Layers size={20} className="text-builder-accent" />
+                  )}
+                  <h2 className="text-2xl font-medium text-gradient">
+                    {selectedTemplate
+                      ? templateDescriptions[selectedTemplate].title
+                      : "Template Preview"}
+                  </h2>
+                </div>
                 <p className="text-sm text-muted-foreground">
-                  Select a template from the sidebar to preview.
+                  {selectedTemplate
+                    ? templateDescriptions[selectedTemplate].description
+                    : "Select a template from the sidebar to preview."}
                 </p>
               </div>
 
-              <Card className="p-6 min-h-[400px] backdrop-blur-sm bg-card/50 border-white/10">
-                {renderSelectedTemplate()}
-              </Card>
+              {selectedTemplate ? (
+                renderSelectedTemplate()
+              ) : (
+                <Card className="p-6 min-h-[400px] backdrop-blur-sm bg-card/50 border-white/10">
+                  {renderSelectedTemplate()}
+                </Card>
+              )}
 
               {link && (
                 <div className="mt-6 p-4 neo-blur rounded-lg animate-slide-up">
@@ -291,7 +323,7 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
                 className="flex-1"
                 onClick={() => setActiveTab("more")}
               >
-                <Layers size={20} />
+                <Dices size={20} />
               </Button>
               <Button
                 variant={activeTab === "settings" ? "default" : "ghost"}
@@ -346,24 +378,10 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
                   <h3 className="font-medium">More Templates</h3>
                   <Button
                     className="w-full justify-start mb-2"
-                    onClick={() => setSelectedTemplate("sell-tokens")}
-                  >
-                    <Layers size={16} className="mr-2" />
-                    Use Sell Tokens Template
-                  </Button>
-                  <Button
-                    className="w-full justify-start mb-2"
                     onClick={() => setSelectedTemplate("gambling")}
                   >
-                    <Layers size={16} className="mr-2" />
+                    <Dices size={16} className="mr-2" />
                     Use Gambling Template
-                  </Button>
-                  <Button
-                    className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("gaming")}
-                  >
-                    <Layers size={16} className="mr-2" />
-                    Use Gaming Template
                   </Button>
                 </div>
               )}
