@@ -130,7 +130,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
       {/* ------ Left: User Input ------ */}
       {/* <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10"> */}
       <Card className="w-full backdrop-blur-sm bg-card/80 border-none border-white/10 rounded-xl">
-        <CardHeader>
+        {/* <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Wallet size={20} className="text-builder-accent" />
             Receive Tokens
@@ -138,8 +138,8 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
           <CardDescription>
             Enter an amount and recipient address
           </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        </CardHeader> */}
+        <CardContent className="space-y-4 mt-5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
               {/* Title */}

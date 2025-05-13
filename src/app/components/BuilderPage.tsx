@@ -6,7 +6,6 @@ import { useToast } from "@/app/hooks/use-toast";
 import {
   ArrowRightLeft,
   Dices,
-  HandCoins,
   Layers,
   Settings,
   ShoppingCart,
@@ -15,9 +14,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import GamblingTemplate from "./templates/GamblingTemplate";
-import GamingTemplate from "./templates/GamingTemplate";
 import NFTMarketplaceTemplate from "./templates/NFTMarketplaceTemplate";
-import SellTokensTemplate from "./templates/SellTokensTemplate";
 import SwapTemplate from "./templates/SwapTemplate";
 import TokenReceiveTemplate from "./templates/TokenReceiveTemplate";
 import VotingTemplate from "./templates/VotingTemplate";
@@ -30,9 +27,7 @@ type TemplateType =
   | "token-receive"
   | "voting"
   | "nft-marketplace"
-  | "sell-tokens"
   | "gambling"
-  | "gaming"
   | "swap"
   | null;
 
@@ -71,12 +66,8 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
         return <VotingTemplate customizable={true} />;
       case "nft-marketplace":
         return <NFTMarketplaceTemplate customizable={true} />;
-      case "sell-tokens":
-        return <SellTokensTemplate customizable={true} />;
       case "gambling":
         return <GamblingTemplate customizable={true} />;
-      case "gaming":
-        return <GamingTemplate customizable={true} />;
       case "swap":
         return <SwapTemplate customizable={true} />;
       default:
@@ -95,18 +86,44 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
   };
 
   // Identidy the template description
-  const templateDescriptions: Record<Exclude<TemplateType, null>, string> = {
-    "token-receive":
-      "A template that lets you receive SOL tokens through blockchain link.",
-    voting:
-      "A template for creating decentralized voting systems on the blockchain.",
-    "nft-marketplace":
-      "A ready-made NFT marketplace where users can mint, buy, and sell NFTs.",
-    "sell-tokens": "A customizable template to create and manage token sales.",
-    gambling: "A framework for building crypto-powered gambling applications.",
-    gaming:
-      "A template for integrating blockchain features into gaming experiences.",
-    swap: "A template to create a decentralized token swapping interface.",
+  const templateDescriptions: Record<
+    Exclude<TemplateType, null>,
+    {
+      icon: JSX.Element;
+      title: string;
+      description: string;
+    }
+  > = {
+    "token-receive": {
+      icon: <Wallet size={20} className="text-builder-accent" />,
+      title: "Token Receive Link",
+      description:
+        "A template that lets you receive SOL tokens through a blockchain link.",
+    },
+    voting: {
+      icon: <Vote size={20} className="text-builder-accent" />,
+      title: "Decentralized Voting",
+      description:
+        "A template for creating decentralized voting systems on the blockchain.",
+    },
+    "nft-marketplace": {
+      icon: <ShoppingCart size={20} className="text-builder-accent" />,
+      title: "NFT Marketplace",
+      description:
+        "A ready-made NFT marketplace where users can mint, buy, and sell NFTs.",
+    },
+    gambling: {
+      icon: <Dices size={20} className="text-builder-accent" />,
+      title: "Crypto Gambling App",
+      description:
+        "A framework for building crypto-powered gambling applications.",
+    },
+    swap: {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "Token Swap Interface",
+      description:
+        "A template to create a decentralized token swapping interface.",
+    },
   };
 
   return (
@@ -186,43 +203,15 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "sell-tokens" ? "gradient-border" : ""
-              }`}
-              onClick={() => setSelectedTemplate("sell-tokens")}
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-builder-primary">
-                  <HandCoins size={18} />
-                </div>
-                <span className="text-sm font-medium">Sell Tokens</span>
-              </div>
-            </Card>
-
-            <Card
-              className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
                 selectedTemplate === "gambling" ? "gradient-border" : ""
               }`}
               onClick={() => setSelectedTemplate("gambling")}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
-                </div>
-                <span className="text-sm font-medium">Gambling</span>
-              </div>
-            </Card>
-
-            <Card
-              className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "gaming" ? "gradient-border" : ""
-              }`}
-              onClick={() => setSelectedTemplate("gaming")}
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-builder-primary">
                   <Dices size={18} />
                 </div>
-                <span className="text-sm font-medium">Gaming</span>
+                <span className="text-sm font-medium">Gambling</span>
               </div>
             </Card>
 
@@ -248,12 +237,21 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
           <div className="flex-1 px-6 py-4 overflow-y-auto builder-grid">
             <div className="container mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-medium mb-3 text-gradient">
-                  {selectedTemplate?.toUpperCase() || "Template Preview"}
-                </h2>
+                <div className="flex items-center gap-2 mb-2">
+                  {selectedTemplate ? (
+                    templateDescriptions[selectedTemplate].icon
+                  ) : (
+                    <Layers size={20} className="text-builder-accent" />
+                  )}
+                  <h2 className="text-2xl font-medium text-gradient">
+                    {selectedTemplate
+                      ? templateDescriptions[selectedTemplate].title
+                      : "Template Preview"}
+                  </h2>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   {selectedTemplate
-                    ? templateDescriptions[selectedTemplate]
+                    ? templateDescriptions[selectedTemplate].description
                     : "Select a template from the sidebar to preview."}
                 </p>
               </div>
@@ -325,7 +323,7 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
                 className="flex-1"
                 onClick={() => setActiveTab("more")}
               >
-                <Layers size={20} />
+                <Dices size={20} />
               </Button>
               <Button
                 variant={activeTab === "settings" ? "default" : "ghost"}
@@ -380,24 +378,10 @@ const BuilderPage: React.FC<BuilderPageProps> = ({ isLoggedIn }) => {
                   <h3 className="font-medium">More Templates</h3>
                   <Button
                     className="w-full justify-start mb-2"
-                    onClick={() => setSelectedTemplate("sell-tokens")}
-                  >
-                    <Layers size={16} className="mr-2" />
-                    Use Sell Tokens Template
-                  </Button>
-                  <Button
-                    className="w-full justify-start mb-2"
                     onClick={() => setSelectedTemplate("gambling")}
                   >
-                    <Layers size={16} className="mr-2" />
+                    <Dices size={16} className="mr-2" />
                     Use Gambling Template
-                  </Button>
-                  <Button
-                    className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("gaming")}
-                  >
-                    <Layers size={16} className="mr-2" />
-                    Use Gaming Template
                   </Button>
                 </div>
               )}
