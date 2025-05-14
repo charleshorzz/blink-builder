@@ -51,8 +51,8 @@ export const GET = async (req: Request) => {
       actions: [
         {
           type: "message", // Not a transaction, just a message submission
-          label: `Vote for ${config.name}`,
-          href: `/api/actions/vote-sol?candidate=${config.name}`,
+          label: `Vote for ${config.name || "Charles"}`,
+          href: `/api/actions/vote-sol?candidate=${config.name || "Charles"}`,
         },
       ],
     },
@@ -77,7 +77,7 @@ export const POST = async (req: Request) => {
     const config = await configRes.json();
 
     if (!config.publicKey) {
-      throw new Error("Public key is not found.");
+      throw new Error("Candidate's public key is not found.");
     }
 
     const candidateKey = new PublicKey(config.publicKey);
