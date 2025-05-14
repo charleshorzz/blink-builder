@@ -149,7 +149,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
                     <FormControl>
                       <Input placeholder="Exp: Donte for Alice..." {...field} />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs">
                       This is your blink's title.
                     </FormDescription>
                     <FormMessage />
@@ -174,7 +174,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
                         }
                       />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs">
                       The image for displaying in the blink.
                     </FormDescription>
                     <FormMessage />

@@ -5,10 +5,12 @@ import {
   ActionPostRequest,
   ACTIONS_CORS_HEADERS,
   BLOCKCHAIN_IDS,
-} from '@solana/actions';
+} from "@solana/actions";
 
 // imports for the transaction
-import { Connection, PublicKey } from '@solana/web3.js';
+import { PublicKey } from "@solana/web3.js";
+
+import { GET as getConfig } from "../../vote-config/route";
 
 // CAIP-2 format for Solana
 const blockchain = BLOCKCHAIN_IDS.devnet;
@@ -16,14 +18,9 @@ const blockchain = BLOCKCHAIN_IDS.devnet;
 // Set standardized headers for Blink Providers
 const headers = {
   ...ACTIONS_CORS_HEADERS,
-  'x-blockchain-ids': blockchain,
-  'x-action-version': '2.4',
+  "x-blockchain-ids": blockchain,
+  "x-action-version": "2.4",
 };
-// Create a connection to the Solana blockchain
-const connection = new Connection('https://api.devnet.solana.com');
-
-// Set the donation wallet address
-const donationWallet = new PublicKey(process.env.DONATION_WALLET_ADDRESS!);
 
 // OPTIONS endpoint is required for CORS preflight requests
 // Your Blink won't render if you don't add this
@@ -33,18 +30,23 @@ export const OPTIONS = async () => {
 
 // GET endpoint returns the Blink metadata (JSON) and UI configuration
 export const GET = async (req: Request) => {
+  const configRes = await getConfig();
+  const config = await configRes.json();
+
   const response: ActionGetResponse = {
-    type: 'action',
-    icon: `${new URL('/solana-pic.png', req.url).toString()}`,
-    label: 'Vote Now',
-    title: 'University Election',
-    description: 'Vote for your favorite candidate in the university election.',
+    type: "action",
+    label: "Vote Now",
+    icon: config.file || `${new URL("/votePerson.jpg", req.url).toString()}`,
+    title: config.title || "University Election",
+    description:
+      config.description ||
+      "Vote for your favorite candidate in the university election.",
     links: {
       actions: [
         {
-          type: 'message', // Not a transaction, just a message submission
-          label: 'Vote for Alice',
-          href: `/api/actions/vote-sol?candidate=Alice`,
+          type: "message", // Not a transaction, just a message submission
+          label: `Vote for ${config.name}`,
+          href: `/api/actions/vote-sol?candidate=${config.name}`,
         },
       ],
     },
@@ -68,7 +70,7 @@ const votes: VoteEntry[] = [];
 export const POST = async (req: Request) => {
   try {
     const url = new URL(req.url);
-    const candidate = url.searchParams.get('candidate');
+    const candidate = url.searchParams.get("candidate");
 
     // Payer public key is passed in the request body
     const request: ActionPostRequest = await req.json();
@@ -76,7 +78,7 @@ export const POST = async (req: Request) => {
 
     if (!voter || !candidate) {
       return new Response(
-        JSON.stringify({ message: 'Missing account or candidate' }),
+        JSON.stringify({ message: "Missing account or candidate" }),
         {
           status: 400,
           headers,
@@ -90,7 +92,7 @@ export const POST = async (req: Request) => {
     );
     if (alreadyVoted) {
       return new Response(
-        JSON.stringify({ message: 'You have already voted.' }),
+        JSON.stringify({ message: "You have already voted." }),
         {
           status: 403, // Forbidden
           headers,
@@ -103,7 +105,7 @@ export const POST = async (req: Request) => {
 
     // skip the wallet signing step and just display a confirmation message in the Blink UI
     const response = {
-      type: 'message',
+      type: "message",
       data: "This process won't initiate any SOL transactions. It's solely for verification purposes.",
       links: {},
     };
@@ -112,11 +114,11 @@ export const POST = async (req: Request) => {
     return Response.json(response, { status: 200, headers });
   } catch (error) {
     // Log and return an error response
-    console.error('Error processing request:', error);
+    console.error("Error processing request:", error);
 
     // Error message
     const message =
-      error instanceof Error ? error.message : 'Internal server error';
+      error instanceof Error ? error.message : "Internal server error";
 
     // Wrap message in an ActionError object so it can be shown in the Blink UI
     const errorResponse: ActionError = {
