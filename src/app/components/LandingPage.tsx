@@ -5,6 +5,14 @@ import { Button } from "@/app/components/ui/button";
 import Link from "next/link";
 import Navigation from "./Navigation";
 import RotatingCard from "./3D/RotatingCard";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/app/components/ui/carousel";
+import { CardSpotlight } from "./ui/card-spotlight";
 
 interface LandingPageProps {
   connectWallet: () => void;
@@ -150,56 +158,72 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
             Start with a template and customize it to your needs
           </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            {
-              title: "Token Receiver",
-              description: "Accept token payments with a simple form",
-              color: "#7E69AB",
-              delay: 0,
-            },
-            {
-              title: "DAO Voting",
-              description: "Create proposals and collect community votes",
-              color: "#6E59A5",
-              delay: 200,
-            },
-            {
-              title: "NFT Marketplace",
-              description: "Buy, sell and trade NFTs in a custom marketplace",
-              color: "#8B5CF6",
-              delay: 400,
-            },
-          ].map((template, i) => (
-            <div
-              key={i}
-              className="rounded-lg overflow-hidden border border-white/10 group hover:shadow-lg transition-all backdrop-blur-md bg-card/20 animate-on-scroll opacity-0 glow-effect"
-              style={{ animationDelay: `${template.delay}ms` }}
-            >
-              <div className="h-48 relative">
-                <img
-                  src={"blockchainCard.png"}
-                  alt={"image"}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="font-semibold text-xl mb-2">{template.title}</h3>
-                <p className="text-muted-foreground mb-4">
-                  {template.description}
-                </p>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="w-full group-hover:bg-builder-accent group-hover:text-white transition-colors"
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-1">
+            {[
+              {
+                title: "Token Payment",
+                description:
+                  "Let others send you tokens instantly via a simple Blink form",
+                color: "#7E69AB",
+                delay: 0,
+              },
+              {
+                title: "DAO Voting",
+                description:
+                  "Launch a Blink that allows your community to vote on DAO proposals",
+                color: "#6E59A5",
+                delay: 200,
+              },
+              {
+                title: "NFT Marketplace",
+                description:
+                  "Create a Blink for trading NFTs directly inside supported wallets",
+                color: "#8B5CF6",
+                delay: 400,
+              },
+              {
+                title: "Gambling",
+                description:
+                  "Fun, chance-based interactions via an on-chain gambling Blink",
+                color: "#8B5CF6",
+                delay: 400,
+              },
+              {
+                title: "Token Swap",
+                description:
+                  "Trigger a token swap from within the wallet using this Blink action",
+                color: "#8B5CF6",
+                delay: 400,
+              },
+            ].map((template, i) => (
+              <CarouselItem key={i} className="pl-1 md:basis-1/2 lg:basis-1/3">
+                <CardSpotlight
+                  className="rounded-lg overflow-hidden border border-white/10 bg-card/20 hover-effect animate-on-scroll opacity-0 "
+                  style={{ animationDelay: `${template.delay}ms` }}
                 >
-                  Use Template
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+                  <div className="h-48 relative">
+                    <img
+                      src={"blockchainCard.png"}
+                      alt={"image"}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="p-6 text-center relative">
+                    <h3 className="font-semibold text-xl mb-2">
+                      {template.title}
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      {template.description}
+                    </p>
+                  </div>
+                </CardSpotlight>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </section>
 
       {/* CTA Section */}
