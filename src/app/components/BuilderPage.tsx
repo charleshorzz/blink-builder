@@ -33,6 +33,7 @@ import Navigation from "./Navigation";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { Transaction } from "@solana/web3.js";
+import SwapCarousel from "./templates/SwapTemplate";
 
 type TemplateType =
   | "token-receive"
@@ -87,7 +88,7 @@ const BuilderPage: React.FC = () => {
       case "gambling":
         return <GamblingTemplate />;
       default:
-        return <TokenReceiveTemplate customizable={true} />;
+        return <SwapCarousel />;
     }
   };
 
