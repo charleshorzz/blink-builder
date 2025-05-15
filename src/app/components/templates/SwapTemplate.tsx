@@ -3,6 +3,7 @@
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
+import { useToast } from "@/app/components/ui/use-toast";
 import { Blink, useBlink } from "@dialectlabs/blinks";
 import { useBlinkSolanaWalletAdapter } from "@dialectlabs/blinks/hooks/solana";
 import "@dialectlabs/blinks/index.css";
@@ -68,6 +69,7 @@ const SwapCarousel: React.FC = () => {
   const { publicKey, sendTransaction } = useWallet();
   const [showBlink, setShowBlink] = useState(false);
   const selectedPair = swapPairs[0];
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -351,15 +353,7 @@ const BlinkCard: React.FC<{
   const { adapter } = useBlinkSolanaWalletAdapter(
     `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API!}`
   );
-  const { blink, isLoading, error } = useBlink({ url: blinkApiUrl });
-
-  if (error) {
-    return (
-      <div className="p-4 text-destructive border border-destructive rounded-lg">
-        Error loading Blink: {error.message}
-      </div>
-    );
-  }
+  const { blink, isLoading } = useBlink({ url: blinkApiUrl });
 
   return (
     <div className="w-full h-full p-4">
