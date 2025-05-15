@@ -13,12 +13,25 @@ import {
   CarouselPrevious,
 } from "@/app/components/ui/carousel";
 import { CardSpotlight } from "./ui/card-spotlight";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { useRouter } from "next/navigation";
 
 interface LandingPageProps {
   connectWallet: () => void;
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
+  const { connected } = useWallet();
+  const router = useRouter();
+
+  const handleOnClick = () => {
+    if (connected) {
+      router.replace("/test"); // <-- Ensure this is '/builder'
+    } else {
+      connectWallet?.();
+    }
+  };
+
   // Initialize animation delay counters for staggered animations
   useEffect(() => {
     const animatedElements = document.querySelectorAll(".animate-on-scroll");
@@ -50,17 +63,17 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
       <section className="pt-32 pb-20 px-6 md:px-10 lg:px-20 flex flex-col md:flex-row items-center gap-10 lg:gap-20">
         <div className="w-full md:w-1/2 space-y-6 z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gradient">
-            Build Web3 Apps
+            Build Solana Blinks
             <br />
             <span className="text-builder-accent">Without Code</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-md animate-on-scroll opacity-0 transform translate-y-4">
-            Create blockchain apps with our simple drag and drop builder. No
-            coding required.
+            Create blinks with preconfigured templates and components. No coding
+            required.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-on-scroll opacity-0 transform translate-y-4">
             <Button
-              onClick={connectWallet}
+              onClick={handleOnClick}
               size="lg"
               className="w-full sm:w-auto animate-glow bg-builder-accent hover:bg-builder-accent/80"
             >
@@ -167,6 +180,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Let others send you tokens instantly via a simple Blink form",
                 color: "#7E69AB",
                 delay: 0,
+                image: "tokenBlink.png",
               },
               {
                 title: "DAO Voting",
@@ -174,6 +188,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Launch a Blink that allows your community to vote on DAO proposals",
                 color: "#6E59A5",
                 delay: 200,
+                image: "voteBlink.png",
               },
               {
                 title: "NFT Marketplace",
@@ -181,6 +196,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Create a Blink for trading NFTs directly inside supported wallets",
                 color: "#8B5CF6",
                 delay: 400,
+                image: "nftBlink.png",
               },
               {
                 title: "Gambling",
@@ -230,14 +246,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
       <section className="py-20 px-6 md:px-10 lg:px-20 neo-blur">
         <div className="max-w-4xl mx-auto text-center space-y-6 animate-on-scroll opacity-0">
           <h2 className="text-3xl md:text-4xl font-bold text-gradient">
-            Start Building Your Web3 App Today
+            Start Building Your Blinks Today
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of creators and businesses building on the blockchain
+            Join thousands of creators and businesses building on the blinks
             without writing a single line of code.
           </p>
           <Button
-            onClick={connectWallet}
+            onClick={handleOnClick}
             size="lg"
             className="mt-4 px-8 animate-glow bg-builder-accent hover:bg-builder-accent/80"
           >
