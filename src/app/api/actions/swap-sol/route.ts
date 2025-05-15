@@ -68,7 +68,6 @@ export const GET = async (req: Request) => {
     label,
     title: config.title || title,
     description: config.description || description,
-    disabled: true,
     links: {
       actions: [
         ...(config.amounts || ["0.01", "0.05", "0.1"]).map(
