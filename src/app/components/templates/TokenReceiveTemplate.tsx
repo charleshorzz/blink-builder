@@ -72,7 +72,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
 
   // Adapter, used to connect to the wallet
   const { adapter } = useBlinkSolanaWalletAdapter(
-    "https://api.devnet.solana.com"
+    "https://stylish-restless-sheet.solana-devnet.quiknode.pro/4785d23d03f566851f11e97f29b5787cb6b048e8"
   );
 
   // Blink we want to execute
