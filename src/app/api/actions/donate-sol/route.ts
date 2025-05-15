@@ -17,7 +17,7 @@ import {
   VersionedTransaction,
 } from "@solana/web3.js";
 
-import { GET as getConfig } from "../../blink-config/route";
+import { GET as getConfig } from "../../donate-config/route";
 
 // CAIP-2 format for Solana
 const blockchain = BLOCKCHAIN_IDS.devnet;
@@ -32,7 +32,7 @@ const headers = {
 const connection = new Connection("https://api.devnet.solana.com");
 
 // Set the donation wallet address
-const donationWallet = new PublicKey(process.env.WALLET_ADDRESS!);
+// const donationWallet = new PublicKey(process.env.WALLET_ADDRESS!);
 
 // OPTIONS endpoint is required for CORS preflight requests
 // Your Blink won't render if you don't add this
@@ -139,10 +139,15 @@ export const GET = async (req: Request) => {
 // POST endpoint handles the actual transaction creation
 export const POST = async (req: Request) => {
   try {
-    // Check if the donation wallet address is set
-    if (!donationWallet) {
-      throw new Error("Please add DONATION_WALLET_ADDRESS to your .env file");
+    // Get the latest dynamic config
+    const configRes = await getConfig();
+    const config = await configRes.json();
+
+    if (!config.publicKey) {
+      throw new Error("Public key is not found.");
     }
+
+    const donationWallet = new PublicKey(config.publicKey);
 
     // Step 1: Extract parameters, prepare data
     const url = new URL(req.url);
@@ -153,9 +158,6 @@ export const POST = async (req: Request) => {
     // Payer public key is passed in the request body
     const request: ActionPostRequest = await req.json();
     const payer = new PublicKey(request.account);
-
-    // Receiver of the donation wallet address
-    const receiver = new PublicKey(donationWallet);
 
     //Step 2: prepareTransaction
     const transaction = await prepareTransaction(

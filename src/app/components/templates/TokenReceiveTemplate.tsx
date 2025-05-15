@@ -1,20 +1,15 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/app/components/ui/card";
+import { Card, CardContent } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Blink, useBlink } from "@dialectlabs/blinks";
 import { useBlinkSolanaWalletAdapter } from "@dialectlabs/blinks/hooks/solana";
 import "@dialectlabs/blinks/index.css";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Minus, Plus, Wallet } from "lucide-react";
-import React from "react";
+import { useWalletMultiButton } from "@solana/wallet-adapter-base-ui";
+import { Minus, Plus } from "lucide-react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import BlinkSkeleton from "../BlinkSkeleton";
@@ -28,8 +23,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
-import { useToast } from "@/app/hooks/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
 
 interface TokenReceiveTemplateProps {
   customizable?: boolean;
@@ -68,8 +61,12 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
   customizable = false,
   onCustomize,
 }) => {
-  const { toast } = useToast();
-
+  const [isWallet, setIsWallet] = useState<Boolean>(true);
+  const { publicKey, onConnect } = useWalletMultiButton({
+    onSelectWallet() {
+      // setModalVisible(true);
+    },
+  });
   // The route api with the GET & POST logic
   const blinkApiUrl = "http://localhost:3000/api/actions/donate-sol";
 
@@ -94,19 +91,23 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
 
   // handle submit
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+    if (!publicKey) {
+      setIsWallet(false);
+      throw new Error("No wallet connected");
+    }
 
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("amounts", JSON.stringify(data.amounts));
+    formData.append("publicKey", publicKey!.toBase58());
 
     if (data.file) {
       formData.append("file", data.file);
     }
 
     try {
-      const response = await fetch("../../api/blink-config", {
+      const response = await fetch("../../api/donate-config", {
         method: "POST",
         body: formData,
       });
@@ -114,11 +115,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
       if (!response.ok) {
         throw new Error("Failed to submit form data");
       }
-      toast({
-        title: "Scheduled: Catch up ",
-        description: "Friday, February 10, 2023 at 5:57 PM",
-        action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-      });
+      setIsWallet(true);
       refresh();
     } catch (error) {
       console.error("Error:", error);
@@ -150,9 +147,9 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="shadcn" {...field} />
+                      <Input placeholder="Exp: Donte for Alice..." {...field} />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs">
                       This is your blink's title.
                     </FormDescription>
                     <FormMessage />
@@ -177,7 +174,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
                         }
                       />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs">
                       The image for displaying in the blink.
                     </FormDescription>
                     <FormMessage />
@@ -267,6 +264,11 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
               />
 
               <Button type="submit">Preview Your Blink</Button>
+              {!isWallet && (
+                <p className="text-sm text-red-500">
+                  Please connect your wallet as receiver wallet first!
+                </p>
+              )}
             </form>
           </Form>
         </CardContent>

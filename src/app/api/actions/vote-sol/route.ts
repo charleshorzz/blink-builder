@@ -5,10 +5,13 @@ import {
   ActionPostRequest,
   ACTIONS_CORS_HEADERS,
   BLOCKCHAIN_IDS,
-} from '@solana/actions';
+} from "@solana/actions";
+import { createClient } from "@supabase/supabase-js";
 
 // imports for the transaction
-import { Connection, PublicKey } from '@solana/web3.js';
+import { PublicKey } from "@solana/web3.js";
+
+import { GET as getConfig } from "../../vote-config/route";
 
 // CAIP-2 format for Solana
 const blockchain = BLOCKCHAIN_IDS.devnet;
@@ -16,14 +19,9 @@ const blockchain = BLOCKCHAIN_IDS.devnet;
 // Set standardized headers for Blink Providers
 const headers = {
   ...ACTIONS_CORS_HEADERS,
-  'x-blockchain-ids': blockchain,
-  'x-action-version': '2.4',
+  "x-blockchain-ids": blockchain,
+  "x-action-version": "2.4",
 };
-// Create a connection to the Solana blockchain
-const connection = new Connection('https://api.devnet.solana.com');
-
-// Set the donation wallet address
-const donationWallet = new PublicKey(process.env.DONATION_WALLET_ADDRESS!);
 
 // OPTIONS endpoint is required for CORS preflight requests
 // Your Blink won't render if you don't add this
@@ -31,20 +29,30 @@ export const OPTIONS = async () => {
   return new Response(null, { headers });
 };
 
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
+
 // GET endpoint returns the Blink metadata (JSON) and UI configuration
 export const GET = async (req: Request) => {
+  const configRes = await getConfig();
+  const config = await configRes.json();
+
   const response: ActionGetResponse = {
-    type: 'action',
-    icon: `${new URL('/solana-pic.png', req.url).toString()}`,
-    label: 'Vote Now',
-    title: 'University Election',
-    description: 'Vote for your favorite candidate in the university election.',
+    type: "action",
+    label: "Vote Now",
+    icon: config.file || `${new URL("/votePerson.jpg", req.url).toString()}`,
+    title: config.title || "University Election",
+    description:
+      config.description ||
+      "Vote for your favorite candidate in the university election.",
     links: {
       actions: [
         {
-          type: 'message', // Not a transaction, just a message submission
-          label: 'Vote for Alice',
-          href: `/api/actions/vote-sol?candidate=Alice`,
+          type: "message", // Not a transaction, just a message submission
+          label: `Vote for ${config.name || "Charles"}`,
+          href: `/api/actions/vote-sol?candidate=${config.name || "Charles"}`,
         },
       ],
     },
@@ -62,21 +70,43 @@ type VoteEntry = {
   candidate: string; // chosen candidate
 };
 
-// In-memory store (use a real DB in production)
-const votes: VoteEntry[] = [];
-
 export const POST = async (req: Request) => {
   try {
+    // Get the candidate publicKey
+    const configRes = await getConfig();
+    const config = await configRes.json();
+
+    if (!config.publicKey) {
+      throw new Error("Candidate's public key is not found.");
+    }
+
+    const candidateKey = new PublicKey(config.publicKey);
+
+    // Get the title of blink
+    const candidateTitle = config.title;
+
+    // Get the candidate name
     const url = new URL(req.url);
-    const candidate = url.searchParams.get('candidate');
+    const candidate = url.searchParams.get("candidate");
 
-    // Payer public key is passed in the request body
+    // Get the voter's public key from the body
     const request: ActionPostRequest = await req.json();
-    const voter = new PublicKey(request.account);
+    const voterKey = new PublicKey(request.account);
 
-    if (!voter || !candidate) {
+    // Prevent self-voting
+    if (candidateKey.toBase58() === voterKey.toBase58()) {
       return new Response(
-        JSON.stringify({ message: 'Missing account or candidate' }),
+        JSON.stringify({ message: "You cannot vote for yourself." }),
+        {
+          status: 403,
+          headers,
+        }
+      );
+    }
+
+    if (!voterKey || !candidate || !candidateKey) {
+      return new Response(
+        JSON.stringify({ message: "Missing required fields." }),
         {
           status: 400,
           headers,
@@ -84,44 +114,68 @@ export const POST = async (req: Request) => {
       );
     }
 
-    // Check if the user has already voted (optional rule)
-    const alreadyVoted = votes.find(
-      (v) => v.voter.toBase58() === voter.toBase58()
-    );
-    if (alreadyVoted) {
-      return new Response(
-        JSON.stringify({ message: 'You have already voted.' }),
-        {
-          status: 403, // Forbidden
-          headers,
-        }
-      );
+    // Check if candidate already exists
+    const { data: existingCandidate, error: fetchError } = await supabase
+      .from("candidates")
+      .select("voter")
+      .eq("candidatePublicKey", candidateKey)
+      .single();
+
+    if (fetchError && fetchError.code !== "PGRST116") {
+      // Unexpected error
+      throw fetchError;
     }
 
-    // Record the vote
-    votes.push({ voter, candidate });
+    if (!existingCandidate) {
+      // Candidate doesn't exist: create a new candidate entry with initial voter
+      const { error: insertError } = await supabase.from("candidates").insert([
+        {
+          candidateName: candidate,
+          candidatePublicKey: candidateKey,
+          voter: [voterKey.toBase58()],
+          title: candidateTitle,
+        },
+      ]);
 
-    // skip the wallet signing step and just display a confirmation message in the Blink UI
+      if (insertError) throw insertError;
+    } else {
+      // Candidate exists: update voter array
+      const currentVoters: string[] = existingCandidate.voter || [];
+
+      if (currentVoters.includes(voterKey.toBase58())) {
+        return new Response(
+          JSON.stringify({ message: "You have already voted." }),
+          {
+            status: 403,
+            headers,
+          }
+        );
+      }
+      const updatedVoters = [...currentVoters, voterKey];
+
+      const { error: updateError } = await supabase
+        .from("candidates")
+        .update({ voter: updatedVoters })
+        .eq("candidatePublicKey", candidateKey);
+
+      if (updateError) throw updateError;
+    }
+    // Success
     const response = {
-      type: 'message',
+      type: "message",
       data: "This process won't initiate any SOL transactions. It's solely for verification purposes.",
       links: {},
     };
 
-    // Return the response with proper headers
-    return Response.json(response, { status: 200, headers });
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers,
+    });
   } catch (error) {
-    // Log and return an error response
-    console.error('Error processing request:', error);
-
-    // Error message
+    console.error("Vote error:", error);
     const message =
-      error instanceof Error ? error.message : 'Internal server error';
-
-    // Wrap message in an ActionError object so it can be shown in the Blink UI
-    const errorResponse: ActionError = {
-      message,
-    };
+      error instanceof Error ? error.message : "Internal server error";
+    const errorResponse: ActionError = { message };
 
     return new Response(JSON.stringify(errorResponse), {
       status: 500,

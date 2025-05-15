@@ -1,114 +1,231 @@
-import React, { useState } from 'react';
+"use client";
+
+import { Button } from "@/app/components/ui/button";
+import { Card, CardContent } from "@/app/components/ui/card";
+import { Blink, useBlink } from "@dialectlabs/blinks";
+import { useBlinkSolanaWalletAdapter } from "@dialectlabs/blinks/hooks/solana";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useWalletMultiButton } from "@solana/wallet-adapter-base-ui";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import BlinkSkeleton from "../BlinkSkeleton";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/app/components/ui/card';
-import { Button } from '@/app/components/ui/button';
-import { Vote } from 'lucide-react';
-import { Progress } from '@/app/components/ui/progress';
-import { RadioGroup, RadioGroupItem } from '@/app/components/ui/radio-group';
-import { Label } from '@/app/components/ui/label';
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 interface VotingTemplateProps {
   customizable?: boolean;
   onCustomize?: () => void;
 }
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+// Zod Schema
+const FormSchema = z.object({
+  title: z.string().min(1, "Title is required."),
+  name: z.string().min(1, "Title is required."),
+  description: z.string().min(1, "Description is required."),
+  file: z
+    .instanceof(File)
+    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+      message: "Only .jpg, .jpeg, .png and .webp files are allowed",
+    })
+    .optional()
+    .or(z.literal(undefined)),
+});
 
 const VotingTemplate: React.FC<VotingTemplateProps> = ({
   customizable = false,
   onCustomize,
 }) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isWallet, setIsWallet] = useState<Boolean>(true);
+  const { publicKey, onConnect } = useWalletMultiButton({
+    onSelectWallet() {
+      // setModalVisible(true);
+    },
+  });
+
+  // The route api with the GET & POST logic
+  const blinkApiUrl = "http://localhost:3000/api/actions/vote-sol";
+
+  // Adapter, used to connect to the wallet
+  const { adapter } = useBlinkSolanaWalletAdapter(
+    "https://api.devnet.solana.com"
+  );
+
+  // Blink we want to execute
+  const { blink, isLoading, refresh } = useBlink({ url: blinkApiUrl });
+
+  // react-hook-form
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      name: "",
+      file: undefined,
+    },
+  });
+
+  // handle submit
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (!publicKey) {
+      setIsWallet(false);
+      throw new Error("No wallet connected");
+    }
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("name", data.name);
+    formData.append("publicKey", publicKey!.toBase58());
+
+    if (data.file) {
+      formData.append("file", data.file);
+    }
+    try {
+      const response = await fetch("../../api/vote-config", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form data");
+      }
+      setIsWallet(true);
+      refresh();
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
 
   return (
-    // <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10">
-    <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Vote size={20} className="text-builder-accent" />
-          DAO Proposal Voting
-        </CardTitle>
-        <CardDescription>
-          Cast your vote on this community proposal
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div>
-          <h3 className="text-lg font-medium mb-2">
-            Proposal: Community Treasury Allocation
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            How should we allocate the 1000 ETH in the community treasury for
-            Q3?
-          </p>
+    <div className="flex flex-col lg:flex-row gap-5">
+      {/* ------ Left: User Input ------ */}
+      {/* <Card className="w-full max-w-md mx-auto backdrop-blur-sm bg-card/80 border-white/10"> */}
+      <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
+        <CardContent className="space-y-6 mt-5">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
+              {/* Name */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Candidate Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Charles" {...field} />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Enter your full name as it should appear on the voting
+                      card.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <RadioGroup
-            value={selectedOption || ''}
-            onValueChange={setSelectedOption}
-            className="space-y-4"
-          >
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="development" id="development" />
-                <Label htmlFor="development">
-                  Fund development initiatives
-                </Label>
-              </div>
-              <Progress value={40} className="h-2 bg-muted" />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>40%</span>
-                <span>400 votes</span>
-              </div>
-            </div>
+              {/* File */}
+              <FormField
+                control={form.control}
+                name="file"
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
+                    <FormLabel>Profile Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...fieldProps}
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) =>
+                          onChange(event.target.files && event.target.files[0])
+                        }
+                      />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Upload a clear photo of yourself for voters to recognize
+                      you.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="marketing" id="marketing" />
-                <Label htmlFor="marketing">Increase marketing efforts</Label>
-              </div>
-              <Progress value={25} className="h-2 bg-muted" />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>25%</span>
-                <span>250 votes</span>
-              </div>
-            </div>
+              {/* Title */}
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="University Election" {...field} />
+                    </FormControl>
+                    <FormDescription className="text-xs">
+                      Provide a short, attention-grabbing title.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="reserve" id="reserve" />
-                <Label htmlFor="reserve">Keep in reserve</Label>
-              </div>
-              <Progress value={35} className="h-2 bg-muted" />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>35%</span>
-                <span>350 votes</span>
-              </div>
-            </div>
-          </RadioGroup>
+              {/* Description */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Share more details about yourself, your goals, and why people should vote for you."
+                        className="resize-none h-[150px]"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit">Preview Your Blink</Button>
+              {!isWallet && (
+                <p className="text-sm text-red-500">
+                  Please connect your wallet as receiver wallet first!
+                </p>
+              )}
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      {/* ------ Right: BlinkCard ------ */}
+      {isLoading || !blink ? (
+        <BlinkSkeleton />
+      ) : (
+        <div className="w-full max-w-2xl">
+          <Blink
+            blink={blink}
+            adapter={adapter}
+            securityLevel="all"
+            stylePreset="x-dark"
+          />
         </div>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        {customizable && (
-          <Button
-            variant="outline"
-            onClick={onCustomize}
-            className="gradient-border"
-          >
-            Customize
-          </Button>
-        )}
-        <Button
-          disabled={!selectedOption}
-          className="w-full gradient-border bg-builder-accent hover:bg-builder-accent/80"
-        >
-          Cast Vote
-        </Button>
-      </CardFooter>
-    </Card>
+      )}
+    </div>
   );
 };
 
