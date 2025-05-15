@@ -69,13 +69,6 @@ const GamblingTemplate: React.FC = () => {
     setLoading(true);
     setShowBlink(false);
     try {
-      console.log("Placing bet with:", {
-        creator: publicKey.toBase58(),
-        series: seriesLabel,
-        amount: betAmount,
-        side: selectedTeamName,
-        account: publicKey.toBase58(),
-      });
       const res = await fetch("/api/actions/gamble-sol", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -88,21 +81,16 @@ const GamblingTemplate: React.FC = () => {
           time: selectedSeriesObj.time,
         }),
       });
-      console.log("API response:", res);
       if (!res.ok) throw new Error("Failed to create bet");
       const data = await res.json();
-      console.log("API data:", data);
 
       const tx = data.transaction;
-      console.log("Serialized transaction:", tx);
       const transaction = VersionedTransaction.deserialize(
         Buffer.from(tx, "base64")
       );
-      console.log("Deserialized transaction:", transaction);
 
       const latestBlockhash = await connection.getLatestBlockhash();
       const txid = await sendTransaction(transaction, connection);
-      console.log("Transaction sent, txid:", txid);
 
       // Show the Miniblink link immediately
       const baseUrl =
@@ -130,7 +118,6 @@ const GamblingTemplate: React.FC = () => {
         })
         .then(() => {
           toast({ title: "Transaction confirmed!" });
-          console.log("Transaction confirmed");
         })
         .catch((e) => {
           toast({
@@ -150,11 +137,10 @@ const GamblingTemplate: React.FC = () => {
   return (
     <Card className="w-full backdrop-blur-sm bg-card/80 border-white/10">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Layers size={20} className="text-builder-accent" />
-          NBA Games
-        </CardTitle>
-        <div className="mt-2 text-lg font-semibold">Choose Playoff Series</div>
+        <CardTitle className="flex items-center gap-2">NBA Games</CardTitle>
+        <div className="mt-2 text-sm text-muted-foreground">
+          Choose Playoff Series
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -10,17 +10,15 @@ import { Card } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import {
-  Wallet,
-  Vote,
-  ShoppingCart,
-  Layers,
-  Home,
-  Settings,
-  Link,
-  Database,
-  VoteIcon,
   ArrowRightLeft,
+  Database,
   Dices,
+  Layers,
+  Settings,
+  ShoppingCart,
+  Vote,
+  VoteIcon,
+  Wallet,
 } from "lucide-react";
 import TokenReceiveTemplate from "./templates/TokenReceiveTemplate";
 import VoteRecordTemplate from "./templates/VoteRecordTemplate";
@@ -41,9 +39,7 @@ type TemplateType =
   | "voting"
   | "vote-history"
   | "nft-marketplace"
-  | "sell-tokens"
   | "gambling"
-  | "gaming"
   | "swap"
   | null;
 
@@ -51,7 +47,8 @@ const BuilderPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("receive");
   const [projectName, setProjectName] = useState("My Web3 App");
   const [link, setLink] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateType>(null);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<TemplateType>("token-receive");
   const { toast } = useToast();
   const { publicKey, connected, sendTransaction } = useWallet();
   const { setVisible } = useWalletModal();
@@ -87,12 +84,8 @@ const BuilderPage: React.FC = () => {
         return <VoteRecordTemplate />;
       case "nft-marketplace":
         return <NFTMarketplaceTemplate />;
-      case "sell-tokens":
-        return <SellTokensTemplate customizable={true} />;
       case "gambling":
         return <GamblingTemplate />;
-      case "gaming":
-        return <GamingTemplate customizable={true} />;
       default:
         return <TokenReceiveTemplate customizable={true} />;
     }
@@ -142,16 +135,6 @@ const BuilderPage: React.FC = () => {
       title: "Token Swap",
       description:
         "A template to create a decentralized token swapping interface.",
-    },
-    "sell-tokens": {
-      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
-      title: "",
-      description: "",
-    },
-    gaming: {
-      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
-      title: "",
-      description: "",
     },
   };
 
@@ -218,7 +201,7 @@ const BuilderPage: React.FC = () => {
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
+                  <Dices size={18} />
                 </div>
                 <span className="text-sm font-medium">Gambling</span>
               </div>
@@ -232,7 +215,7 @@ const BuilderPage: React.FC = () => {
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
-                  <Layers size={18} />
+                  <ArrowRightLeft size={18} />
                 </div>
                 <span className="text-sm font-medium">Swap</span>
               </div>
@@ -248,16 +231,6 @@ const BuilderPage: React.FC = () => {
               <div className="flex justify-between">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    {selectedTemplate == "voting" && (
-                      <Button
-                        variant="outline"
-                        className="gradient-border"
-                        size="sm"
-                        onClick={() => setSelectedTemplate("vote-history")}
-                      >
-                        <Database /> Record
-                      </Button>
-                    )}
                     {selectedTemplate == "vote-history" && (
                       <Button
                         variant="outline"
@@ -307,9 +280,9 @@ const BuilderPage: React.FC = () => {
                 )}
               </div>
 
-              <Card className="p-6 min-h-[400px] backdrop-blur-sm bg-card/50 border-white/10">
-                {renderSelectedTemplate()}
-              </Card>
+              {/* <Card className="p-6 min-h-[400px] backdrop-blur-sm bg-card/50 border-white/10"> */}
+              <div>{renderSelectedTemplate()}</div>
+              {/* </Card> */}
 
               {link && (
                 <div className="mt-6 p-4 neo-blur rounded-lg animate-slide-up">
@@ -425,24 +398,10 @@ const BuilderPage: React.FC = () => {
                   <h3 className="font-medium">More Templates</h3>
                   <Button
                     className="w-full justify-start mb-2"
-                    onClick={() => setSelectedTemplate("sell-tokens")}
-                  >
-                    <Layers size={16} className="mr-2" />
-                    Use Sell Tokens Template
-                  </Button>
-                  <Button
-                    className="w-full justify-start mb-2"
                     onClick={() => setSelectedTemplate("gambling")}
                   >
                     <Layers size={16} className="mr-2" />
                     Use Gambling Template
-                  </Button>
-                  <Button
-                    className="w-full justify-start"
-                    onClick={() => setSelectedTemplate("gaming")}
-                  >
-                    <Layers size={16} className="mr-2" />
-                    Use Gaming Template
                   </Button>
                 </div>
               )}
