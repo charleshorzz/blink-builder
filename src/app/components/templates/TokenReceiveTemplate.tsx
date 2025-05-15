@@ -11,7 +11,7 @@ import "@dialectlabs/blinks/index.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { VersionedTransaction } from "@solana/web3.js";
-import { Minus, Plus, Twitter } from "lucide-react";
+import { Loader, Minus, Plus, Twitter } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -354,7 +354,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
                 />
 
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Executing" : "Preview Your Blink"}
+                  {loading ? <Loader /> : "Preview Your Blink"}
                 </Button>
                 {!isWallet && (
                   <p className="text-sm text-red-500">
