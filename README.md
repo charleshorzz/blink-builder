@@ -41,6 +41,7 @@ Frontend:
 - Solana Wallet Adapter: For connecting and interacting with Solana wallets (e.g., Phantom, Solflare).
 - Solana Web3.js: For building and sending Solana blockchain transactions.
 - Dialect Blinks: For social actions and sharing (e.g., miniblink links, @dialectlabs/blinks).
+  
 Backend:
 - Next.js API Routes: For backend logic (e.g., /api/actions/gamble-sol).
 - Solana Web3.js: For constructing and serializing transactions on the backend.
