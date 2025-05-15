@@ -3,6 +3,7 @@ import { Aldrich } from 'next/font/google';
 import { WalletContextProvider } from './components/providers/WalletProviderContext';
 import './globals.css';
 import { SupabaseProvider } from './providers';
+import { Toaster } from './components/ui/toaster';
 
 const aldrich = Aldrich({ subsets: ['latin'], weight: '400' });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
         <WalletContextProvider>
           <SupabaseProvider>{children}</SupabaseProvider>
         </WalletContextProvider>
+        <Toaster />
       </body>
     </html>
   );

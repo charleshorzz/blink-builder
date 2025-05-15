@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import { useToast } from "@/app/hooks/use-toast";
 import {
