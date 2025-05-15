@@ -223,7 +223,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Let others send you tokens instantly via a simple Blink form",
                 color: "#7E69AB",
                 delay: 0,
-                image: "tokenBlink.png",
+                image: "tokenReceive.png",
               },
               {
                 title: "DAO Voting",
@@ -231,7 +231,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Launch a Blink that allows your community to vote on DAO proposals",
                 color: "#6E59A5",
                 delay: 200,
-                image: "voteBlink.png",
+                image: "voteSol.png",
               },
               {
                 title: "NFT Marketplace",
@@ -239,7 +239,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Create a Blink for trading NFTs directly inside supported wallets",
                 color: "#8B5CF6",
                 delay: 400,
-                image: "nftBlink.png",
+                image: "NFTsol.png",
               },
               {
                 title: "Gambling",
@@ -247,6 +247,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Fun, chance-based interactions via an on-chain gambling Blink",
                 color: "#8B5CF6",
                 delay: 400,
+                image: "betSol.png",
               },
               {
                 title: "Token Swap",
@@ -254,6 +255,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   "Trigger a token swap from within the wallet using this Blink action",
                 color: "#8B5CF6",
                 delay: 400,
+                image: "swapSol.png",
               },
             ].map((template, i) => (
               <CarouselItem key={i} className="pl-1 md:basis-1/2 lg:basis-1/3">
