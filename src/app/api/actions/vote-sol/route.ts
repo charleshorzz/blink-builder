@@ -1,15 +1,25 @@
-// imports related to the blink
+import { v4 as uuidv4 } from "uuid";
 import {
   ActionError,
   ActionGetResponse,
   ActionPostRequest,
+  ActionPostResponse,
   ACTIONS_CORS_HEADERS,
   BLOCKCHAIN_IDS,
 } from "@solana/actions";
+
+// imports for the transaction
+import {
+  Connection,
+  PublicKey,
+  LAMPORTS_PER_SOL,
+  SystemProgram,
+  TransactionMessage,
+  VersionedTransaction,
+} from "@solana/web3.js";
 import { createClient } from "@supabase/supabase-js";
 
 // imports for the transaction
-import { PublicKey } from "@solana/web3.js";
 
 import { GET as getConfig } from "../../vote-config/route";
 
@@ -22,6 +32,9 @@ const headers = {
   "x-blockchain-ids": blockchain,
   "x-action-version": "2.4",
 };
+
+// Create a connection to the Solana blockchain
+const connection = new Connection("https://api.devnet.solana.com");
 
 // OPTIONS endpoint is required for CORS preflight requests
 // Your Blink won't render if you don't add this
@@ -74,7 +87,7 @@ export const POST = async (req: Request) => {
     if (!config.publicKey) {
       throw new Error("Candidate's public key is not found.");
     }
-
+    const voteId = uuidv4();
     const candidateKey = new PublicKey(config.publicKey);
 
     // Get the title of blink
@@ -84,9 +97,30 @@ export const POST = async (req: Request) => {
     const url = new URL(req.url);
     const candidate = url.searchParams.get("candidate");
 
+    // Get the amount
+    const amount = Number(url.searchParams.get("amount"));
+
     // Get the voter's public key from the body
     const request: ActionPostRequest = await req.json();
     const voterKey = new PublicKey(request.account);
+
+    //Step 2: prepareTransaction
+    if (amount) {
+      const transaction = await prepareTransaction(
+        connection,
+        voterKey,
+        candidateKey,
+        amount
+      );
+      const response = {
+        type: "transaction",
+        transaction: Buffer.from(transaction.serialize()).toString("base64"),
+        blinkUrl: `/api/actions/vote-sol?bet=${voteId}`,
+      };
+
+      // Return the response with proper headers
+      return Response.json(response, { status: 200, headers });
+    }
 
     // Prevent self-voting
     if (candidateKey.toBase58() === voterKey.toBase58()) {
@@ -185,4 +219,32 @@ export const POST = async (req: Request) => {
       headers,
     });
   }
+};
+
+// Prepare the transaction
+const prepareTransaction = async (
+  connection: Connection,
+  payer: PublicKey,
+  receiver: PublicKey,
+  amount: number
+) => {
+  // Create a transfer instruction
+  const instruction = SystemProgram.transfer({
+    fromPubkey: payer,
+    toPubkey: new PublicKey(receiver),
+    lamports: amount * LAMPORTS_PER_SOL,
+  });
+
+  // Get the latest blockhash
+  const { blockhash } = await connection.getLatestBlockhash();
+
+  // Create a transaction message
+  const message = new TransactionMessage({
+    payerKey: payer,
+    recentBlockhash: blockhash,
+    instructions: [instruction],
+  }).compileToV0Message();
+
+  // Create and return a versioned transaction
+  return new VersionedTransaction(message);
 };

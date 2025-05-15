@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 // imports related to the blink
 import {
   ActionGetResponse,
@@ -148,7 +149,7 @@ export const POST = async (req: Request) => {
     if (!config.publicKey) {
       throw new Error("Public key is not found.");
     }
-
+    const donateId = uuidv4();
     const donationWallet = new PublicKey(config.publicKey);
 
     // Step 1: Extract parameters, prepare data
@@ -170,9 +171,10 @@ export const POST = async (req: Request) => {
     );
 
     // Step 3: Create a response with the serialized transaction
-    const response: ActionPostResponse = {
+    const response = {
       type: "transaction",
       transaction: Buffer.from(transaction.serialize()).toString("base64"),
+      blinkUrl: `/api/actions/donate-sol?bet=${donateId}`,
     };
 
     // Return the response with proper headers
