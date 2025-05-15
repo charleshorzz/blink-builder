@@ -84,7 +84,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     if (!publicKey) {
       setIsWallet(false);
-      throw new Error("No wallet connected");
+      return;
     }
 
     const formData = new FormData();
