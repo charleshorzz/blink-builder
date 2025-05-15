@@ -9,7 +9,7 @@ import {
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
-import { Layers } from "lucide-react";
+import { Layers, Twitter } from "lucide-react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { useToast } from "@/app/components/ui/use-toast";
 import { Transaction, VersionedTransaction } from "@solana/web3.js";
@@ -255,6 +255,20 @@ const GamblingTemplate: React.FC = () => {
               >
                 Copy
               </Button>
+              <a
+                href={`https://x.com/intent/post?text=${encodeURIComponent(
+                  miniblinkUrl
+                )}`}
+                target="_blank"
+              >
+                <Button
+                  variant="outline"
+                  className="bg-neutral-900  hover:bg-neutral-950 ml-2"
+                >
+                  <Twitter />
+                  Share
+                </Button>
+              </a>
             </div>
           </div>
         )}
