@@ -232,16 +232,6 @@ const BuilderPage: React.FC = () => {
               <div className="flex justify-between">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    {selectedTemplate == "vote-history" && (
-                      <Button
-                        variant="outline"
-                        className="gradient-border"
-                        size="sm"
-                        onClick={() => setSelectedTemplate("voting")}
-                      >
-                        <VoteIcon /> Back to Template
-                      </Button>
-                    )}
                     {selectedTemplate ? (
                       templateDescriptions[selectedTemplate].icon
                     ) : (
