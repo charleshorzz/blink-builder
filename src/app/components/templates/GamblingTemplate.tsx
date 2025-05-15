@@ -98,6 +98,8 @@ const GamblingTemplate: React.FC = () => {
       const fullBlinkUrl = data.blinkUrl.startsWith("http")
         ? data.blinkUrl
         : `${baseUrl}${data.blinkUrl}`;
+
+      console.log(data);
       setMiniblinkUrl(
         `https://dial.to/?action=solana-action%3A${encodeURIComponent(
           fullBlinkUrl
