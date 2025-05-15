@@ -171,15 +171,17 @@ export async function POST(request: NextRequest) {
     const action = url.searchParams.get("action");
     const amount = Number(url.searchParams.get("amount"));
     const req: ActionPostRequest = await request.json();
-    const payer = new PublicKey(req.account);
     const owner =
       url.searchParams.get("owner") || url.searchParams.get("seller");
+    console.log("searchParams", url.searchParams);
+    console.log("owner back", owner);
     if (!owner) {
       return new NextResponse(
         JSON.stringify({ error: "Missing owner public key" }),
         { status: 400, headers }
       );
     }
+    const payer = new PublicKey(req.account || owner);
     const ownerWallet = new PublicKey(owner);
     const mintAddress = url.searchParams.get("mintAddress");
 
@@ -554,19 +556,20 @@ async function verifyNFTOwnership(mintAddress: string, owner: string) {
 function generateBlinkUrl(
   action: string,
   mintAddress: string,
-  prices: string[],
+  prices: string,
   seller: string
 ) {
   const baseUrl = "https://dial.to/";
   const actionUrl = new URL(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/actions/nft/action`
+    `${process.env.NEXT_PUBLIC_API_URL}/api/actions/nft`
   );
-  actionUrl.searchParams.append("actionType", action);
+  actionUrl.searchParams.append("action", action);
   actionUrl.searchParams.append("mintAddress", mintAddress);
-  actionUrl.searchParams.append("prices", prices.join(","));
+  actionUrl.searchParams.append("prices", prices);
   actionUrl.searchParams.append("seller", seller);
   const params = new URLSearchParams({
     action: `solana-action:${actionUrl.toString()}`,
   });
+  console.log(`${baseUrl}?${params.toString()}`);
   return `${baseUrl}?${params.toString()}`;
 }

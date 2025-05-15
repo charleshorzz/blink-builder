@@ -235,6 +235,7 @@ const NFTMarketplaceTemplate: React.FC = () => {
     formData.append("amounts", JSON.stringify(data.prices));
     formData.append("owner", publicKey?.toBase58() || "");
 
+    // Update the blink template
     try {
       const response = await fetch("../../api/blink-config", {
         method: "POST",
@@ -244,15 +245,12 @@ const NFTMarketplaceTemplate: React.FC = () => {
       if (!response.ok) {
         throw new Error("Failed to submit form data");
       }
-      toast({
-        title: "Scheduled: Catch up ",
-        description: "Friday, February 10, 2023 at 5:57 PM",
-        action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-      });
       refresh();
     } catch (error) {
       console.error("Error:", error);
     }
+
+    await handleGenerateBlink();
   }
 
   // Handle Generate Blink (Approval)
@@ -261,14 +259,45 @@ const NFTMarketplaceTemplate: React.FC = () => {
     setError("");
 
     try {
-      const response = await axios.post("/api/actions/nft", {
-        mintAddress: sellForm.getValues("mintAddress"),
-        prices: sellForm.getValues("prices"),
-        title: sellForm.getValues("title"),
-        description: sellForm.getValues("description"),
-        seller: publicKey?.toBase58(),
-        action: "sell",
-        approve: true,
+      const mintAddress = sellForm.getValues("mintAddress");
+      const prices = sellForm.getValues("prices");
+      const title = sellForm.getValues("title");
+      const description = sellForm.getValues("description");
+      const owner = publicKey?.toBase58();
+
+      // Validate inputs
+      if (!mintAddress || !mintAddress.match(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/)) {
+        throw new Error("Invalid or missing mint address");
+      }
+      if (
+        !prices ||
+        prices.length === 0 ||
+        prices.some((p) => isNaN(Number(p)))
+      ) {
+        throw new Error("Invalid or missing prices");
+      }
+      if (!title || !description) {
+        throw new Error("Title and description are required");
+      }
+      if (!owner) {
+        throw new Error("Wallet not connected");
+      }
+
+      console.log("owner frontend", owner);
+
+      // Construct URL with query parameters
+      const url = new URL("/api/actions/nft", window.location.origin);
+      url.searchParams.append("action", "list");
+      url.searchParams.append("amount", prices[0]);
+      url.searchParams.append("owner", owner);
+      url.searchParams.append("mintAddress", mintAddress);
+
+      const response = await axios.post(url.toString(), {
+        account: owner,
+        mintAddress,
+        prices,
+        title,
+        description,
       });
 
       console.log("Generate Blink Response:", response.data);
@@ -280,19 +309,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
 
       setBlinkUrl(blinkUrl);
       sellForm.reset();
-
-      toast({
-        title: "NFT Listed",
-        description: "Your NFT has been listed for sale.",
-        action: (
-          <ToastAction
-            altText="View Blink"
-            onClick={() => window.open(blinkUrl, "_blank")}
-          >
-            View Blink
-          </ToastAction>
-        ),
-      });
     } catch (err: any) {
       const errorMessage = err.response?.data?.error || "Failed to list NFT";
       setError(errorMessage);
@@ -536,7 +552,7 @@ const NFTMarketplaceTemplate: React.FC = () => {
                     {blinkUrl && (
                       <div className="mt-4">
                         <p className="text-green-500">
-                          NFT listed successfully!
+                          NFT blink is generated!
                         </p>
                         <a
                           href={blinkUrl}
