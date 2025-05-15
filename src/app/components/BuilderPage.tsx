@@ -17,8 +17,13 @@ import {
   Home,
   Settings,
   Link,
+  Database,
+  VoteIcon,
+  ArrowRightLeft,
+  Dices,
 } from "lucide-react";
 import TokenReceiveTemplate from "./templates/TokenReceiveTemplate";
+import VoteRecordTemplate from "./templates/VoteRecordTemplate";
 import VotingTemplate from "./templates/VotingTemplate";
 import NFTMarketplaceTemplate from "./templates/NFTMarketplaceTemplate";
 import SellTokensTemplate from "./templates/SellTokensTemplate";
@@ -34,10 +39,12 @@ import { Transaction } from "@solana/web3.js";
 type TemplateType =
   | "token-receive"
   | "voting"
+  | "vote-history"
   | "nft-marketplace"
   | "sell-tokens"
   | "gambling"
   | "gaming"
+  | "swap"
   | null;
 
 const BuilderPage: React.FC = () => {
@@ -76,6 +83,8 @@ const BuilderPage: React.FC = () => {
         return <TokenReceiveTemplate customizable={true} />;
       case "voting":
         return <VotingTemplate customizable={true} />;
+      case "vote-history":
+        return <VoteRecordTemplate />;
       case "nft-marketplace":
         return <NFTMarketplaceTemplate />;
       case "sell-tokens":
@@ -87,6 +96,63 @@ const BuilderPage: React.FC = () => {
       default:
         return <TokenReceiveTemplate customizable={true} />;
     }
+  };
+
+  // Identidy the template description
+  const templateDescriptions: Record<
+    Exclude<TemplateType, null>,
+    {
+      icon: JSX.Element;
+      title: string;
+      description: string;
+    }
+  > = {
+    "token-receive": {
+      icon: <Wallet size={20} className="text-builder-accent" />,
+      title: "Token Receive",
+      description:
+        "A template that lets you receive SOL tokens through a blockchain link.",
+    },
+    voting: {
+      icon: <Vote size={20} className="text-builder-accent" />,
+      title: "Decentralized Voting",
+      description:
+        "Create a Blink card to let others vote for you in a decentralized way.",
+    },
+    "vote-history": {
+      icon: <Database size={20} className="text-builder-accent" />,
+      title: "Vote Record",
+      description:
+        "Track the total votes you've collected via your voting link.",
+    },
+    "nft-marketplace": {
+      icon: <ShoppingCart size={20} className="text-builder-accent" />,
+      title: "NFT Marketplace",
+      description:
+        "A ready-made NFT marketplace where users can mint, buy, and sell NFTs.",
+    },
+    gambling: {
+      icon: <Dices size={20} className="text-builder-accent" />,
+      title: "Crypto Gambling",
+      description:
+        "A framework for building crypto-powered gambling applications.",
+    },
+    swap: {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "Token Swap",
+      description:
+        "A template to create a decentralized token swapping interface.",
+    },
+    "sell-tokens": {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "",
+      description: "",
+    },
+    gaming: {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "",
+      description: "",
+    },
   };
 
   return (
@@ -115,7 +181,10 @@ const BuilderPage: React.FC = () => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "voting" ? "gradient-border" : ""
+                selectedTemplate === "voting" ||
+                selectedTemplate === "vote-history"
+                  ? "gradient-border"
+                  : ""
               }`}
               onClick={() => setSelectedTemplate("voting")}
             >
@@ -190,13 +259,46 @@ const BuilderPage: React.FC = () => {
           {/* Preview Area */}
           <div className="flex-1 p-6 overflow-y-auto builder-grid">
             <div className="container mx-auto">
-              <div className="mb-6">
-                <h2 className="text-xl font-medium mb-3 text-gradient">
-                  Template Preview
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Select a template from the sidebar to preview.
-                </p>
+              <div className="flex justify-between">
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    {selectedTemplate ? (
+                      templateDescriptions[selectedTemplate].icon
+                    ) : (
+                      <Layers size={20} className="text-builder-accent" />
+                    )}
+                    <h2 className="text-2xl font-medium text-gradient">
+                      {selectedTemplate
+                        ? templateDescriptions[selectedTemplate].title
+                        : "Template Preview"}
+                    </h2>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {selectedTemplate
+                      ? templateDescriptions[selectedTemplate].description
+                      : "Select a template from the sidebar to preview."}
+                  </p>
+                </div>
+                {selectedTemplate == "voting" && (
+                  <Button
+                    variant="outline"
+                    className="gradient-border"
+                    size="sm"
+                    onClick={() => setSelectedTemplate("vote-history")}
+                  >
+                    <Database /> Record
+                  </Button>
+                )}
+                {selectedTemplate == "vote-history" && (
+                  <Button
+                    variant="outline"
+                    className="gradient-border"
+                    size="sm"
+                    onClick={() => setSelectedTemplate("voting")}
+                  >
+                    <VoteIcon /> Back to Template
+                  </Button>
+                )}
               </div>
 
               <Card className="p-6 min-h-[400px] backdrop-blur-sm bg-card/50 border-white/10">
