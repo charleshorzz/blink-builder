@@ -5,8 +5,7 @@ BlinkBuilder is a no-code tool designed to generate Solana Blinks—special link
 
 **URL**: https://blink-builder-roan.vercel.app
 
-## How can I edit this code?
-
+## Installation
 Follow these steps:
 
 ```sh
@@ -19,42 +18,30 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Create variable below in .env.local at the root of the project.(Don't forget to add it into .gitignore file)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+OPENAI_API_KEY=your_openai_api_key
+RPC_URL=your_solana_rpc_url
+SOLANA_PRIVATE_KEY=your_solana_private_key
+PINATA_API_KEY=your_pinata_api_key
+PINATA_API_SECRET=your_pinata_api_secret
+NEXT_PUBLIC_API_URL=your_backend_api_url
+WALLET_ADDRESS=your_wallet_address
+
+# Step 5: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
 ## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/d8e75b1d-eb43-4e64-a42f-4f2182e8b582) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Frontend:
+- React: The main UI library (.tsx files, React hooks, components).
+- Next.js: Likely used for routing and server-side rendering (usage of pages, app, and API routes).
+- TypeScript: For type safety in both frontend and backend (.ts and .tsx files).
+- Tailwind CSS (or similar utility-first CSS): Used for styling (class names like bg-indigo-600, rounded-lg, etc.).
+- Solana Wallet Adapter: For connecting and interacting with Solana wallets (e.g., Phantom, Solflare).
+- Solana Web3.js: For building and sending Solana blockchain transactions.
+- Dialect Blinks: For social actions and sharing (e.g., miniblink links, @dialectlabs/blinks).
+Backend:
+- Next.js API Routes: For backend logic (e.g., /api/actions/gamble-sol).
+- Solana Web3.js: For constructing and serializing transactions on the backend.
+- Node.js: The runtime for the backend API routes.
