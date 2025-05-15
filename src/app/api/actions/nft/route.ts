@@ -175,23 +175,28 @@ export async function POST(request: NextRequest) {
     const owner =
       url.searchParams.get("owner") || url.searchParams.get("seller");
     if (!owner) {
-      return new Error("Missing owner public key");
+      return new NextResponse(
+        JSON.stringify({ error: "Missing owner public key" }),
+        { status: 400, headers }
+      );
     }
     const ownerWallet = new PublicKey(owner);
     const mintAddress = url.searchParams.get("mintAddress");
 
     let sellerPubkey: PublicKey | null = null;
-    let nftMint: PublicKey;
+    let nftMint: PublicKey | null = null;
     try {
       if (owner) {
         sellerPubkey = new PublicKey(owner);
       }
       if (mintAddress) {
         nftMint = new PublicKey(mintAddress);
+      } else {
+        throw new Error("Mint address is required");
       }
-    } catch {
+    } catch (error) {
       return new NextResponse(
-        JSON.stringify({ error: "Invalid public key or mint address" }),
+        JSON.stringify({ error: (error as Error).message }),
         { status: 400 }
       );
     }
@@ -379,10 +384,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     // Log and return an error response
     console.error("Error processing request:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers,
-    });
+    return new NextResponse(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers }
+    );
   }
   //   try {
   //     // extract params
@@ -509,74 +514,6 @@ export async function POST(request: NextRequest) {
   //       }
   //     );
   //   }
-}
-
-// GET /api/nft/owned: Fetch owned NFTs
-export async function GET_owned(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const owner = searchParams.get("owner");
-
-    if (!owner) {
-      return new NextResponse(
-        JSON.stringify({ error: "Missing owner public key" }),
-        {
-          status: 400,
-          headers,
-        }
-      );
-    }
-
-    try {
-      new PublicKey(owner);
-    } catch {
-      return new NextResponse(
-        JSON.stringify({ error: "Invalid owner public key" }),
-        {
-          status: 400,
-          headers,
-        }
-      );
-    }
-
-    const nfts = await metaplex
-      .nfts()
-      .findAllByOwner({ owner: new PublicKey(owner) });
-
-    const ownedNFTs = await Promise.all(
-      nfts.map(async (nft) => {
-        if ("mint" in nft) {
-          const metadata = await getNFTMetadata(nft.mint.address.toBase58());
-          return {
-            mintAddress: nft.mint.address.toBase58(),
-            name: metadata.name,
-            symbol: metadata.symbol,
-            uri: metadata.uri,
-          };
-        }
-        return null;
-      })
-    ).then((results) =>
-      results.filter((nft): nft is NonNullable<typeof nft> => nft !== null)
-    );
-
-    return new NextResponse(JSON.stringify({ nfts: ownedNFTs }), {
-      status: 200,
-      headers,
-    });
-  } catch (error) {
-    console.error("Owned NFTs Error:", error);
-    return new NextResponse(
-      JSON.stringify({
-        error:
-          error instanceof Error ? error.message : "Failed to fetch owned NFTs",
-      }),
-      {
-        status: 500,
-        headers,
-      }
-    );
-  }
 }
 
 // Helper function to get NFT metadata

@@ -64,7 +64,7 @@ const Index = () => {
   return (
     <>
       {isConnected ? (
-        <BuilderPage isLoggedIn={isConnected} />
+        <BuilderPage />
       ) : (
         <LandingPage connectWallet={connectWallet} />
       )}
