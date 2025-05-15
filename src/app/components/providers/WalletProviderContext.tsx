@@ -8,9 +8,7 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
-  CoinbaseWalletAdapter,
   PhantomWalletAdapter,
-  SolflareWalletAdapter,
   UnsafeBurnerWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
@@ -47,9 +45,10 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({
        * instantiate its legacy wallet adapter here. Common legacy adapters can be found
        * in the npm package `@solana/wallet-adapter-wallets`.
        */
+      // new UnsafeBurnerWalletAdapter(), // Keep for example, but add more like PhantomWalletAdapter
+      // Add other wallet adapters you want to support here, e.g.:
       new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new CoinbaseWalletAdapter(),
+      // If applicable
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [network]
