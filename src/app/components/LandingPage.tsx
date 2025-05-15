@@ -171,18 +171,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
               description: "Accept token payments with a simple form",
               color: "#7E69AB",
               delay: 0,
+              image: "tokenBlink.png",
             },
             {
               title: "DAO Voting",
               description: "Create proposals and collect community votes",
               color: "#6E59A5",
               delay: 200,
+              image: "voteBlink.png",
             },
             {
               title: "NFT Marketplace",
-              description: "Buy, sell and trade NFTs in a custom marketplace",
+              description: "Mint and sell in a custom template",
               color: "#8B5CF6",
               delay: 400,
+              image: "nftBlink.png",
             },
           ].map((template, i) => (
             <div
@@ -192,7 +195,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
             >
               <div className="h-48 relative">
                 <img
-                  src={"blockchainCard.png"}
+                  src={template.image}
                   alt={"image"}
                   className="w-full h-full object-contain"
                 />
