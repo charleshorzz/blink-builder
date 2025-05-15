@@ -26,7 +26,7 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({
   children,
 }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  const network = WalletAdapterNetwork.Testnet; // Or your desired network
+  const network = WalletAdapterNetwork.Devnet; // Or your desired network
 
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
