@@ -4,6 +4,7 @@ BlinkBuilder is a no-code tool designed to generate Solana Blinks—special link
 ## Project info
 
 **URL**: https://blink-builder-roan.vercel.app
+**TECHNICAL-VIDEO**: https://youtu.be/vxtdQmFDxYk
 
 ## Installation
 Follow these steps:
