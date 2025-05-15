@@ -163,6 +163,39 @@
   }
 }
 
+/* Add this to your globals.css or a relevant CSS file */
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.simple-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.2); /* Light border color */
+  border-top: 3px solid #ffffff; /* Spinner color (white or your theme color) */
+  border-radius: 50%;
+  width: 24px; /* Adjust size as needed */
+  height: 24px; /* Adjust size as needed */
+  animation: spin 1s linear infinite;
+}
+
+/* Optional: Style a container for the spinner to match button size */
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Add padding, margin, min-width/height to match your WalletMultiButton size */
+  min-width: 150px; /* Example: Adjust based on your button */
+  height: 40px; /* Example: Adjust based on your button */
+  /* You might also want to match background/border styles of the button */
+  background-color: #333; /* Example background */
+  border-radius: 4px; /* Example border-radius */
+}
+
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;

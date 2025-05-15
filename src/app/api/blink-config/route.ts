@@ -11,7 +11,6 @@ let blinkConfig: {
   amounts: string[];
   owner?: string;
   mintAddress?: string;
-  publicKey: PublicKey;
 } | null = null;
 
 export async function POST(req: NextRequest) {
@@ -151,7 +150,6 @@ export async function POST(req: NextRequest) {
       amounts,
       owner,
       mintAddress,
-      publicKey: new PublicKey(formData.get("publicKey") as string),
     };
 
     //Save to supabase

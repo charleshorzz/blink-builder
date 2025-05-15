@@ -7,7 +7,10 @@ import {
   WalletProvider,
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { PhantomWalletAdapter, UnsafeBurnerWalletAdapter } from "@solana/wallet-adapter-wallets";
+import {
+  PhantomWalletAdapter,
+  UnsafeBurnerWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 
 // Default styles that can be overridden by your app
@@ -45,7 +48,7 @@ export const WalletContextProvider: FC<WalletContextProviderProps> = ({
       // new UnsafeBurnerWalletAdapter(), // Keep for example, but add more like PhantomWalletAdapter
       // Add other wallet adapters you want to support here, e.g.:
       new PhantomWalletAdapter(),
- // If applicable
+      // If applicable
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [network]
