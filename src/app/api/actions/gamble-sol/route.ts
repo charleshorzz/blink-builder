@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import {
   Connection,
   PublicKey,
@@ -9,15 +9,15 @@ import {
 } from "@solana/web3.js";
 
 const headers = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'x-action-version': '2.4',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET,POST,PUT,OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "x-action-version": "2.4",
 };
 
 // In-memory bet store (reset on server restart)
 const bets: Record<string, any> = {};
-const connection = new Connection("https://api.devnet.solana.com");
+const connection = new Connection(process.env.RPC_URL!);
 
 export const OPTIONS = async () => {
   return new Response(null, { headers });
@@ -28,7 +28,7 @@ export const POST = async (req: Request) => {
     const body = await req.json();
     const { creator, series, amount, side, account, time } = body;
     if (!creator || !series || !amount || !side || !account) {
-      return new Response(JSON.stringify({ error: 'Missing fields' }), {
+      return new Response(JSON.stringify({ error: "Missing fields" }), {
         status: 400,
         headers,
       });
@@ -85,9 +85,9 @@ export const POST = async (req: Request) => {
 
 export const GET = async (req: Request) => {
   const url = new URL(req.url);
-  const bet = url.searchParams.get('bet');
+  const bet = url.searchParams.get("bet");
   if (!bet || !bets[bet]) {
-    return new Response(JSON.stringify({ error: 'Bet not found' }), {
+    return new Response(JSON.stringify({ error: "Bet not found" }), {
       status: 404,
       headers,
     });
@@ -95,17 +95,24 @@ export const GET = async (req: Request) => {
   const betInfo = bets[bet];
   // Example team logos (expand as needed)
   const teamLogos: Record<string, string> = {
-    'Knicks': 'https://upload.wikimedia.org/wikipedia/en/2/25/New_York_Knicks_logo.svg',
-    'Celtics': 'https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg',
-    'Warriors': 'https://upload.wikimedia.org/wikipedia/en/0/01/Golden_State_Warriors_logo.svg',
-    'Timberwolves': 'https://upload.wikimedia.org/wikipedia/en/c/c2/Minnesota_Timberwolves_logo.svg',
+    Knicks:
+      "https://upload.wikimedia.org/wikipedia/en/2/25/New_York_Knicks_logo.svg",
+    Celtics:
+      "https://upload.wikimedia.org/wikipedia/en/8/8f/Boston_Celtics.svg",
+    Warriors:
+      "https://upload.wikimedia.org/wikipedia/en/0/01/Golden_State_Warriors_logo.svg",
+    Timberwolves:
+      "https://upload.wikimedia.org/wikipedia/en/c/c2/Minnesota_Timberwolves_logo.svg",
   };
   // Determine the opposite side
-  const allTeams = betInfo.series.split(' vs ');
-  const oppositeSide = allTeams.find((team: string) => team !== betInfo.side) || 'Other';
-  const icon = teamLogos[oppositeSide] || 'https://upload.wikimedia.org/wikipedia/en/2/25/Los_Angeles_Lakers_logo.svg';
+  const allTeams = betInfo.series.split(" vs ");
+  const oppositeSide =
+    allTeams.find((team: string) => team !== betInfo.side) || "Other";
+  const icon =
+    teamLogos[oppositeSide] ||
+    "https://upload.wikimedia.org/wikipedia/en/2/25/Los_Angeles_Lakers_logo.svg";
   const response = {
-    type: 'action',
+    type: "action",
     label: `🏀 Bet: ${betInfo.series}`,
     icon,
     title: `NBA Playoff Bet`,
@@ -114,11 +121,11 @@ export const GET = async (req: Request) => {
       `• Creator: ${betInfo.creator} (picked: ${betInfo.side})\n` +
       `• You are betting on: ${oppositeSide}\n` +
       `• Amount: 💰 ${betInfo.amount} SOL\n` +
-      `• Time: ${betInfo.time || 'N/A'}`,
+      `• Time: ${betInfo.time || "N/A"}`,
     links: {
       actions: [
         {
-          type: 'transaction',
+          type: "transaction",
           label: `Bet ${betInfo.amount} SOL on ${oppositeSide}`,
           href: `/api/actions/gamble-sol/join-bet?bet=${betInfo.id}`,
         },
@@ -133,16 +140,16 @@ export const GET = async (req: Request) => {
 
 export const PUT = async (req: Request) => {
   const url = new URL(req.url);
-  const bet = url.searchParams.get('bet');
+  const bet = url.searchParams.get("bet");
   const { challenger } = await req.json();
   if (!bet || !bets[bet]) {
-    return new Response(JSON.stringify({ error: 'Bet not found' }), {
+    return new Response(JSON.stringify({ error: "Bet not found" }), {
       status: 404,
       headers,
     });
   }
   if (!challenger) {
-    return new Response(JSON.stringify({ error: 'Missing challenger' }), {
+    return new Response(JSON.stringify({ error: "Missing challenger" }), {
       status: 400,
       headers,
     });
@@ -152,4 +159,4 @@ export const PUT = async (req: Request) => {
     status: 200,
     headers,
   });
-}; 
+};

@@ -29,7 +29,9 @@ const headers = {
   "x-action-version": "2.4",
 };
 // Create a connection to the Solana blockchain
-const connection = new Connection("https://api.devnet.solana.com");
+const connection = new Connection(
+  "https://stylish-restless-sheet.solana-devnet.quiknode.pro/4785d23d03f566851f11e97f29b5787cb6b048e8"
+);
 
 // Set the donation wallet address
 // const donationWallet = new PublicKey(process.env.WALLET_ADDRESS!);
