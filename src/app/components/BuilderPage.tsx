@@ -44,6 +44,7 @@ type TemplateType =
   | "sell-tokens"
   | "gambling"
   | "gaming"
+  | "swap"
   | null;
 
 const BuilderPage: React.FC = () => {
@@ -141,6 +142,16 @@ const BuilderPage: React.FC = () => {
       title: "Token Swap",
       description:
         "A template to create a decentralized token swapping interface.",
+    },
+    "sell-tokens": {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "",
+      description: "",
+    },
+    gaming: {
+      icon: <ArrowRightLeft size={20} className="text-builder-accent" />,
+      title: "",
+      description: "",
     },
   };
 
