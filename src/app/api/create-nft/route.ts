@@ -72,6 +72,8 @@ export async function POST(request: NextRequest) {
       creators: [{ address: new PublicKey(seller), share: 100 }],
     });
 
+    console.log("mint address", nft?.address?.toBase58());
+
     return NextResponse.json({
       mintAddress: nft.address.toBase58(),
       sellerPublicKey: seller,

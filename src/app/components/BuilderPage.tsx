@@ -50,28 +50,6 @@ const BuilderPage: React.FC = () => {
   const { setVisible } = useWalletModal();
   const { connection } = useConnection();
 
-  // Function to handle the Play Now click from GamingTemplate
-  const handlePlayGame = async (gameParams: {
-    name: string;
-    amount: number;
-    choice: string;
-  }) => {
-    console.log("Play game clicked:", gameParams.name);
-    console.log("Params:", gameParams);
-
-    if (!connected || !publicKey) {
-      toast({
-        title: "Wallet Not Connected",
-        description: "Please connect your wallet to play games.",
-        variant: "destructive",
-      });
-      setVisible(true); // Open wallet modal
-      return; // Stop the process if not connected
-    }
-
-    console.log("User connected:", publicKey.toBase58());
-  };
-
   const generateLink = () => {
     if (!selectedTemplate) {
       toast({
@@ -107,17 +85,7 @@ const BuilderPage: React.FC = () => {
       case "gaming":
         return <GamingTemplate customizable={true} />;
       default:
-        return (
-          <div className="flex flex-col items-center justify-center text-center p-6 h-full">
-            <p className="text-lg font-medium mb-4">
-              Select a template to get started
-            </p>
-            <p className="text-muted-foreground max-w-md">
-              Choose a template from the sidebar to begin building your Web3
-              application.
-            </p>
-          </div>
-        );
+        return <TokenReceiveTemplate customizable={true} />;
     }
   };
 
@@ -383,17 +351,7 @@ const BuilderPage: React.FC = () => {
                         className="mt-1 bg-background/50"
                       />
                     </div>
-                    <Button
-                      onClick={() =>
-                        handlePlayGame({
-                          name: "rock-paper-scissors",
-                          amount: 0.01,
-                          choice: "rock",
-                        })
-                      }
-                      disabled={!selectedTemplate}
-                      className="w-full"
-                    >
+                    <Button disabled={!selectedTemplate} className="w-full">
                       Generate Link
                     </Button>
                   </div>
