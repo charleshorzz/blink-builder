@@ -1,13 +1,11 @@
 # BlinkBuilder
+BlinkBuilder is a no-code tool designed to generate Solana Blinks—special links that trigger on-chain actions like token transfers, NFT trades, DAO votes, or wagers on NBA games. Users can easily create interactive, blockchain-powered experiences and share them across social platforms. Whether you're betting against friends or collecting payments, BlinkBuilder simplifies Solana development to just a few clicks—no coding required.
 
 ## Project info
 
 **URL**: https://blink-builder-roan.vercel.app
 
 ## How can I edit this code?
-
-**BlinkBuilder**
-BlinkBuilder is a no-code tool designed to generate Solana Blinks—special links that trigger on-chain actions like token transfers, NFT trades, DAO votes, or wagers on NBA games. Users can easily create interactive, blockchain-powered experiences and share them across social platforms. Whether you're betting against friends or collecting payments, BlinkBuilder simplifies Solana development to just a few clicks—no coding required.
 
 Follow these steps:
 
