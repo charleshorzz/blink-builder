@@ -105,20 +105,17 @@ export async function GET(req: NextRequest) {
     type: "action",
     label: "Select NFT",
     icon: config.file || `${new URL("/solana-pic.png", req.url).toString()}`,
-    title: config.title || "NFT Marketplace",
+    title: config.title || "NFT Blink",
     description:
-      config.description ||
-      "Select an NFT to buy or list for sale on the Solana blockchain.",
+      config.description || "Create or Select an NFT to list for sale",
     links: {
       actions: [
         // The ... makes sure each mapped object is added as a flat element in the actions array — not nested.
-        ...(config.amounts || ["0.01", "0.05", "0.1"]).map(
-          (amount: string) => ({
-            type: "transaction",
-            label: `${amount} SOL`,
-            href: `/api/actions/nft?amount=${amount}&owner=${config.owner}&mintAddress=${config.mintAddress}&action=buy`,
-          })
-        ),
+        ...(config.amounts || ["0.01"]).map((amount: string) => ({
+          type: "transaction",
+          label: `${amount} SOL`,
+          href: `/api/actions/nft?amount=${amount}&owner=${config.owner}&mintAddress=${config.mintAddress}&action=buy`,
+        })),
         {
           type: "transaction",
           href: `/api/actions/nft?amount=${
