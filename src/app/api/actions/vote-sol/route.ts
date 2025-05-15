@@ -30,8 +30,8 @@ export const OPTIONS = async () => {
 };
 
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 // GET endpoint returns the Blink metadata (JSON) and UI configuration
@@ -65,11 +65,6 @@ export const GET = async (req: Request) => {
 };
 
 // POST endpoint handles the actual transaction creation
-type VoteEntry = {
-  voter: PublicKey; // voter's public key
-  candidate: string; // chosen candidate
-};
-
 export const POST = async (req: Request) => {
   try {
     // Get the candidate publicKey
@@ -115,10 +110,17 @@ export const POST = async (req: Request) => {
     }
 
     // Check if candidate already exists
+    // const { data: existingCandidate, error: fetchError } = await supabase
+    //   .from("candidates")
+    //   .select("voter")
+    //   .eq("candidatePublicKey", candidateKey)
+    //   .single();
+
     const { data: existingCandidate, error: fetchError } = await supabase
       .from("candidates")
       .select("voter")
       .eq("candidatePublicKey", candidateKey)
+      .eq("title", candidateTitle)
       .single();
 
     if (fetchError && fetchError.code !== "PGRST116") {
@@ -156,7 +158,8 @@ export const POST = async (req: Request) => {
       const { error: updateError } = await supabase
         .from("candidates")
         .update({ voter: updatedVoters })
-        .eq("candidatePublicKey", candidateKey);
+        .eq("candidatePublicKey", candidateKey.toBase58())
+        .eq("title", candidateTitle);
 
       if (updateError) throw updateError;
     }
