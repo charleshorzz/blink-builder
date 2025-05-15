@@ -163,8 +163,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Create NFT Response:", response.data); // Debug log
-
       const { mintAddress } = response.data;
       if (!mintAddress) {
         throw new Error("Mint address not returned in response");
@@ -226,8 +224,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
 
   // handle submit
   async function onSubmit(data: z.infer<typeof SellFormSchema>) {
-    console.log("submit data", data);
-
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("description", data.description);
@@ -283,8 +279,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
         throw new Error("Wallet not connected");
       }
 
-      console.log("owner frontend", owner);
-
       // Construct URL with query parameters
       const url = new URL("/api/actions/nft", window.location.origin);
       url.searchParams.append("action", "list");
@@ -299,8 +293,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
         title,
         description,
       });
-
-      console.log("Generate Blink Response:", response.data);
 
       const { blinkUrl } = response.data;
       if (!blinkUrl) {
