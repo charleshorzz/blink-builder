@@ -99,8 +99,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  console.log("amount", config.amount);
-
   const response: ActionGetResponse = {
     type: "action",
     label: "Select NFT",
@@ -173,8 +171,6 @@ export async function POST(request: NextRequest) {
     const req: ActionPostRequest = await request.json();
     const owner =
       url.searchParams.get("owner") || url.searchParams.get("seller");
-    console.log("searchParams", url.searchParams);
-    console.log("owner back", owner);
     if (!owner) {
       return new NextResponse(
         JSON.stringify({ error: "Missing owner public key" }),
@@ -230,15 +226,11 @@ export async function POST(request: NextRequest) {
           throw new Error("NFT owner mismatch");
         }
 
-        console.log("verify success");
         return true;
       } catch {
         throw new Error("Seller does not own the NFT or invalid mint address");
       }
     };
-
-    // GENERATE BLINKS
-    console.log("actionssss", action);
 
     if (action === "list") {
       // Verify seller owns the NFT
@@ -269,7 +261,6 @@ export async function POST(request: NextRequest) {
         action: `solana-action:${actionUrl.toString()}`,
       });
       const blinkUrl = `${baseUrl}?${params.toString()}`;
-      console.log("Blink URL", blinkUrl);
 
       return NextResponse.json({ success: true, blinkUrl }, { status: 200 });
     }
@@ -308,7 +299,6 @@ export async function POST(request: NextRequest) {
       mintAddress: PublicKey,
       amount: number
     ) => {
-      console.log("enter prepae transaction");
       // SOL transfer: Payer → Seller
       const solInstruction = SystemProgram.transfer({
         fromPubkey: payer,
@@ -570,6 +560,5 @@ function generateBlinkUrl(
   const params = new URLSearchParams({
     action: `solana-action:${actionUrl.toString()}`,
   });
-  console.log(`${baseUrl}?${params.toString()}`);
   return `${baseUrl}?${params.toString()}`;
 }
