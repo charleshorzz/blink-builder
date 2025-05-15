@@ -112,7 +112,7 @@ const NFTMarketplaceTemplate: React.FC = () => {
   } | null>(null);
 
   // Blink setup
-  const blinkApiUrl = "http://localhost:3000/api/actions/nft";
+  const blinkApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/actions/nft`;
   const { adapter } = useBlinkSolanaWalletAdapter(
     "https://api.devnet.solana.com"
   );

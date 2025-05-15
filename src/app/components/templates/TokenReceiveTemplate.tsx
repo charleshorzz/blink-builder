@@ -68,7 +68,7 @@ const TokenReceiveTemplate: React.FC<TokenReceiveTemplateProps> = ({
     },
   });
   // The route api with the GET & POST logic
-  const blinkApiUrl = "http://localhost:3000/api/actions/donate-sol";
+  const blinkApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/actions/donate-sol`;
 
   // Adapter, used to connect to the wallet
   const { adapter } = useBlinkSolanaWalletAdapter(

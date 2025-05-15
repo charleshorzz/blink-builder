@@ -51,7 +51,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({
   customizable = false,
   onCustomize,
 }) => {
-  const [isWallet, setIsWallet] = useState<Boolean>(true);
+  const [isWallet, setIsWallet] = useState<boolean>(true);
   const { publicKey, onConnect } = useWalletMultiButton({
     onSelectWallet() {
       // setModalVisible(true);
@@ -59,7 +59,7 @@ const VotingTemplate: React.FC<VotingTemplateProps> = ({
   });
 
   // The route api with the GET & POST logic
-  const blinkApiUrl = "http://localhost:3000/api/actions/vote-sol";
+  const blinkApiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/actions/vote-sol`;
 
   // Adapter, used to connect to the wallet
   const { adapter } = useBlinkSolanaWalletAdapter(
