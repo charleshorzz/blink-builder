@@ -262,11 +262,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   style={{ animationDelay: `${template.delay}ms` }}
                 >
                   <div className="relative overflow-hidden rounded-xl">
-                    {/* <img
-                      src={template.img}
+                    <img
+                      src={template.image}
                       alt={"image"}
                       className="w-full h-full object-contain rounded-2xl"
-                    /> */}
+                    />
                   </div>
 
                   <div className="p-6 text-center relative">
