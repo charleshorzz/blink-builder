@@ -81,7 +81,7 @@ const BuilderPage: React.FC = () => {
       case "sell-tokens":
         return <SellTokensTemplate customizable={true} />;
       case "gambling":
-        return <GamblingTemplate customizable={true} />;
+        return <GamblingTemplate />;
       case "gaming":
         return <GamingTemplate customizable={true} />;
       default:
