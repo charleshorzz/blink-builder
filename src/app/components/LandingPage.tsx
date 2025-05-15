@@ -55,6 +55,49 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
     };
   }, []);
 
+  const templates = [
+    {
+      title: "Token Payment",
+      description:
+        "Let others send you tokens instantly via a simple Blink form",
+      color: "#7E69AB",
+      img: "/tokenReceive.png",
+      delay: 0,
+    },
+    {
+      title: "DAO Voting",
+      description:
+        "Launch a Blink that allows your community to vote on DAO proposals",
+      color: "#6E59A5",
+      img: "voteSol.png",
+      delay: 200,
+    },
+    {
+      title: "NFT Marketplace",
+      description:
+        "Create a Blink for trading NFTs directly inside supported wallets",
+      color: "#8B5CF6",
+      img: "NFTsol.png",
+      delay: 400,
+    },
+    {
+      title: "Gambling",
+      description:
+        "Fun, chance-based interactions via an on-chain gambling Blink",
+      color: "#8B5CF6",
+      img: "/betSol.png",
+      delay: 400,
+    },
+    {
+      title: "Token Swap",
+      description:
+        "Trigger a token swap from within the wallet using this Blink action",
+      color: "#8B5CF6",
+      img: "swapSol.png",
+      delay: 400,
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col animated-bg">
       <Navigation />
@@ -171,7 +214,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
             Start with a template and customize it to your needs
           </p>
         </div>
-        <Carousel className="w-full">
+        <Carousel className="w-ful none md:block">
           <CarouselContent className="-ml-1">
             {[
               {
@@ -218,13 +261,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
                   className="rounded-lg overflow-hidden border border-white/10 bg-card/20 hover-effect animate-on-scroll opacity-0 "
                   style={{ animationDelay: `${template.delay}ms` }}
                 >
-                  <div className="h-48 relative">
-                    <img
-                      src={"blockchainCard.png"}
+                  <div className="relative overflow-hidden rounded-xl">
+                    {/* <img
+                      src={template.img}
                       alt={"image"}
-                      className="w-full h-full object-contain"
-                    />
+                      className="w-full h-full object-contain rounded-2xl"
+                    /> */}
                   </div>
+
                   <div className="p-6 text-center relative">
                     <h3 className="font-semibold text-xl mb-2">
                       {template.title}
@@ -240,6 +284,27 @@ const LandingPage: React.FC<LandingPageProps> = ({ connectWallet }) => {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
+        {templates.map((template, i) => (
+          <div
+            className="rounded-lg overflow-hidden border border-white/10 bg-card/20 hover-effect animate-on-scroll opacity-0 block md:hidden"
+            style={{ animationDelay: `${template.delay}ms` }}
+          >
+            <div className="relative overflow-hidden rounded-xl">
+              <img
+                src={template.img}
+                alt={"image"}
+                className="w-full h-full object-contain rounded-2xl"
+              />
+            </div>
+
+            <div className="p-6 text-center relative">
+              <h3 className="font-semibold text-xl mb-2">{template.title}</h3>
+              <p className="text-muted-foreground mb-4">
+                {template.description}
+              </p>
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* CTA Section */}
