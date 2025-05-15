@@ -1,24 +1,13 @@
-# Welcome to your Lovable project
+# BlinkBuilder
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/d8e75b1d-eb43-4e64-a42f-4f2182e8b582
+**URL**: https://blink-builder-roan.vercel.app
 
 ## How can I edit this code?
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/d8e75b1d-eb43-4e64-a42f-4f2182e8b582) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**BlinkBuilder**
+BlinkBuilder is a no-code tool designed to generate Solana Blinks—special links that trigger on-chain actions like token transfers, NFT trades, DAO votes, or wagers on NBA games. Users can easily create interactive, blockchain-powered experiences and share them across social platforms. Whether you're betting against friends or collecting payments, BlinkBuilder simplifies Solana development to just a few clicks—no coding required.
 
 Follow these steps:
 
