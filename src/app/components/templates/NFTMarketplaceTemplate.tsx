@@ -288,6 +288,7 @@ const NFTMarketplaceTemplate: React.FC = () => {
 
       const response = await axios.post(url.toString(), {
         account: owner,
+        owner,
         mintAddress,
         prices,
         title,

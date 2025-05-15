@@ -207,16 +207,16 @@ export async function POST(request: NextRequest) {
     const verifyOwnership = async (mintAddress: string, owner: PublicKey) => {
       try {
         // Check token account balance
-        const tokenAccount = await getAssociatedTokenAddress(
-          new PublicKey(mintAddress),
-          owner
-        );
-        const tokenBalance = await connection.getTokenAccountBalance(
-          tokenAccount
-        );
-        if (tokenBalance.value.amount !== "1") {
-          throw new Error("Seller does not own the NFT");
-        }
+        // const tokenAccount = await getAssociatedTokenAddress(
+        //   new PublicKey(mintAddress),
+        //   owner
+        // );
+        // const tokenBalance = await connection.getTokenAccountBalance(
+        //   tokenAccount
+        // );
+        // if (tokenBalance.value.amount !== "1") {
+        //   throw new Error("Seller does not own the NFT");
+        // }
 
         // Optional: Verify NFT metadata
         const nft = await metaplex
