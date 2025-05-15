@@ -506,7 +506,7 @@ const NFTMarketplaceTemplate: React.FC = () => {
                               <div key={index}>
                                 <Input
                                   value={price}
-                                  placeholder={`Price ${index + 1}`}
+                                  placeholder={`0.01 SOL`}
                                   onChange={(e) => {
                                     const newPrices = [...field.value];
                                     newPrices[index] = e.target.value;
@@ -524,36 +524,6 @@ const NFTMarketplaceTemplate: React.FC = () => {
                               }
                             </FormMessage>
                           )}
-                          <div className="flex gap-2 mt-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              disabled={field.value.length >= 3}
-                              onClick={() =>
-                                sellForm.setValue("prices", [
-                                  ...field.value,
-                                  "",
-                                ])
-                              }
-                            >
-                              <Plus />
-                            </Button>
-                            {field.value.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                onClick={() => {
-                                  const current = sellForm.getValues("prices");
-                                  current.pop();
-                                  sellForm.setValue("prices", current);
-                                }}
-                              >
-                                <Minus />
-                              </Button>
-                            )}
-                          </div>
 
                           <FormMessage />
                         </FormItem>
