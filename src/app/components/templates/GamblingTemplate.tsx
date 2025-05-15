@@ -217,7 +217,7 @@ const GamblingTemplate: React.FC = () => {
           ))}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="betAmount">Bet Amount (ETH)</Label>
+          <Label htmlFor="betAmount">Bet Amount (SOL)</Label>
           <Input
             id="betAmount"
             type="number"

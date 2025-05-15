@@ -212,20 +212,6 @@ const BuilderPage: React.FC = () => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "sell-tokens" ? "gradient-border" : ""
-              }`}
-              onClick={() => setSelectedTemplate("sell-tokens")}
-            >
-              <div className="flex items-center gap-3">
-                <div className="text-builder-primary">
-                  <Layers size={18} />
-                </div>
-                <span className="text-sm font-medium">Sell Tokens</span>
-              </div>
-            </Card>
-
-            <Card
-              className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
                 selectedTemplate === "gambling" ? "gradient-border" : ""
               }`}
               onClick={() => setSelectedTemplate("gambling")}
@@ -240,15 +226,15 @@ const BuilderPage: React.FC = () => {
 
             <Card
               className={`p-3 cursor-pointer hover:shadow-md transition-shadow ${
-                selectedTemplate === "gaming" ? "gradient-border" : ""
+                selectedTemplate === "swap" ? "gradient-border" : ""
               }`}
-              onClick={() => setSelectedTemplate("gaming")}
+              onClick={() => setSelectedTemplate("swap")}
             >
               <div className="flex items-center gap-3">
                 <div className="text-builder-primary">
                   <Layers size={18} />
                 </div>
-                <span className="text-sm font-medium">Gaming</span>
+                <span className="text-sm font-medium">Swap</span>
               </div>
             </Card>
           </div>
@@ -262,6 +248,26 @@ const BuilderPage: React.FC = () => {
               <div className="flex justify-between">
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-2">
+                    {selectedTemplate == "voting" && (
+                      <Button
+                        variant="outline"
+                        className="gradient-border"
+                        size="sm"
+                        onClick={() => setSelectedTemplate("vote-history")}
+                      >
+                        <Database /> Record
+                      </Button>
+                    )}
+                    {selectedTemplate == "vote-history" && (
+                      <Button
+                        variant="outline"
+                        className="gradient-border"
+                        size="sm"
+                        onClick={() => setSelectedTemplate("voting")}
+                      >
+                        <VoteIcon /> Back to Template
+                      </Button>
+                    )}
                     {selectedTemplate ? (
                       templateDescriptions[selectedTemplate].icon
                     ) : (
