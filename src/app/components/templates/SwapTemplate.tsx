@@ -3,7 +3,6 @@
 import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
-import { useToast } from "@/app/components/ui/use-toast";
 import { Blink, useBlink } from "@dialectlabs/blinks";
 import { useBlinkSolanaWalletAdapter } from "@dialectlabs/blinks/hooks/solana";
 import "@dialectlabs/blinks/index.css";
@@ -21,9 +20,9 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Textarea } from "../ui/textarea";
-import { Connection, VersionedTransaction } from "@solana/web3.js";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { Label } from "@/app/components/ui/label";
+import { useToast } from "@/app/components/ui/use-toast";
 
 const swapPairs = [
   {
@@ -64,11 +63,10 @@ const SwapCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
   const [isWallet, setIsWallet] = useState<Boolean>(true);
-  const { connection } = useConnection();
   const [miniblinkUrl, setMiniblinkUrl] = useState("");
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey } = useWallet();
   const [showBlink, setShowBlink] = useState(false);
-  const selectedPair = swapPairs[0];
+  const selectedPair = swapPairs[currentIndex];
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -104,7 +102,9 @@ const SwapCarousel: React.FC = () => {
         throw new Error("Failed to submit form data");
       }
 
-      const swapSolUrl = `/api/actions/swap-sol?amount=0&inputMint=${selectedPair.inputMint}&outputMint=${selectedPair.outputMint}`;
+      const amount = data.amounts[0];
+
+      const swapSolUrl = `/api/actions/swap-sol?amount=${amount}&inputMint=${selectedPair.inputMint}&outputMint=${selectedPair.outputMint}`;
       const swapSolRes = await fetch(swapSolUrl, {
         method: "POST",
         headers: {
@@ -120,14 +120,7 @@ const SwapCarousel: React.FC = () => {
       }
 
       const swapSolData = await swapSolRes.json();
-      const tx = swapSolData.transaction;
-
-      const transaction = VersionedTransaction.deserialize(
-        Buffer.from(tx, "base64")
-      );
-
-      const latestBlockhash = await connection.getLatestBlockhash();
-      const txid = await sendTransaction(transaction, connection);
+      console.log("swapSolData", swapSolData);
 
       // Show the Miniblink link immediately
       const baseUrl =
@@ -157,24 +150,6 @@ const SwapCarousel: React.FC = () => {
         title: "Blink created successfully! Share with your friends now!",
       });
 
-      // Confirm transaction in background
-      connection
-        .confirmTransaction({
-          signature: txid,
-          blockhash: latestBlockhash.blockhash,
-          lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-        })
-        .then(() => {
-          toast({ title: "Transaction confirmed!" });
-        })
-        .catch((e) => {
-          console.error("Transaction confirmation error:", e);
-          toast({
-            title: "Transaction confirmation failed",
-            variant: "destructive",
-          });
-        });
-
       setIsWallet(true);
     } catch (error) {
       console.error("Error:", error);
@@ -182,128 +157,136 @@ const SwapCarousel: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5">
-      <Card className="w-full backdrop-blur-sm bg-card/80 border-none border-white/10 rounded-xl">
-        <CardContent className="space-y-4 mt-5">
-          <div className="flex justify-center gap-4">
-            {swapPairs.map((pair, index) => (
-              <button
-                key={pair.outputMint}
-                type="button"
-                onClick={() => setCurrentIndex(index)}
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  currentIndex === index
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
+    <div className="space-y-6">
+      <div className="flex flex-col lg:flex-row gap-5">
+        <Card className="w-full backdrop-blur-sm bg-card/80 border-none border-white/10 rounded-xl">
+          <CardContent className="space-y-4 mt-5">
+            <div className="flex justify-center gap-4">
+              {swapPairs.map((pair, index) => (
+                <button
+                  key={pair.outputMint}
+                  type="button"
+                  onClick={() => setCurrentIndex(index)}
+                  className={`px-4 py-2 rounded-lg transition-colors ${
+                    currentIndex === index
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted hover:bg-muted/80"
+                  }`}
+                >
+                  {pair.label}
+                </button>
+              ))}
+            </div>
+
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
               >
-                {pair.label}
-              </button>
-            ))}
-          </div>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Instant SOL Swap" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe your swap parameters..."
-                        className="resize-none h-[150px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="amounts"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Amounts (in SOL)</FormLabel>
-                    <div className="space-y-2">
-                      {field.value.map((amount, index) => (
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
                         <Input
-                          key={index}
-                          type="number"
-                          step="0.01"
-                          min="0.01"
-                          value={amount}
-                          placeholder={`Amount ${index + 1}`}
-                          onChange={(e) => {
-                            const newAmounts = [...field.value];
-                            newAmounts[index] = e.target.value;
-                            form.setValue("amounts", newAmounts);
-                          }}
+                          placeholder="e.g., Instant SOL Swap"
+                          {...field}
                         />
-                      ))}
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        disabled={field.value.length >= 3}
-                        onClick={() =>
-                          form.setValue("amounts", [...field.value, ""])
-                        }
-                      >
-                        <Plus />
-                      </Button>
-                      {field.value.length > 1 && (
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe your swap parameters..."
+                          className="resize-none h-[150px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="amounts"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Amounts (in SOL)</FormLabel>
+                      <div className="space-y-2">
+                        {field.value.map((amount, index) => (
+                          <Input
+                            key={index}
+                            type="number"
+                            step="0.01"
+                            min="0.01"
+                            value={amount}
+                            placeholder={`Amount ${index + 1}`}
+                            onChange={(e) => {
+                              const newAmounts = [...field.value];
+                              newAmounts[index] = e.target.value;
+                              form.setValue("amounts", newAmounts);
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex gap-2 mt-2">
                         <Button
                           type="button"
                           variant="outline"
                           size="icon"
-                          onClick={() => {
-                            const current = [...field.value];
-                            current.pop();
-                            form.setValue("amounts", current);
-                          }}
+                          disabled={field.value.length >= 3}
+                          onClick={() =>
+                            form.setValue("amounts", [...field.value, ""])
+                          }
                         >
-                          <Minus />
+                          <Plus />
                         </Button>
-                      )}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        {field.value.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              const current = [...field.value];
+                              current.pop();
+                              form.setValue("amounts", current);
+                            }}
+                          >
+                            <Minus />
+                          </Button>
+                        )}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <Button type="submit" className="w-full">
-                Preview Your Blink
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                <Button type="submit" className="w-full">
+                  Preview Your Blink
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
 
-      {showPreview && (
-        <div className="w-full max-w-2xl">
-          <BlinkCard key={`${Date.now()}`} pair={swapPairs[currentIndex]} />
-        </div>
-      )}
+        {showPreview && (
+          <div className="w-full max-w-2xl">
+            <BlinkCard key={`${Date.now()}`} pair={swapPairs[currentIndex]} />
+          </div>
+        )}
+      </div>
 
       {showBlink && miniblinkUrl && (
         <div className="mt-6 p-4 neo-blur rounded-lg animate-slide-up">
@@ -349,7 +332,7 @@ const SwapCarousel: React.FC = () => {
 const BlinkCard: React.FC<{
   pair: (typeof swapPairs)[0];
 }> = ({ pair }) => {
-  const blinkApiUrl = `http://localhost:3002/api/actions/swap-sol?inputMint=${pair.inputMint}&outputMint=${pair.outputMint}`;
+  const blinkApiUrl = `http://localhost:3000/api/actions/swap-sol?inputMint=${pair.inputMint}&outputMint=${pair.outputMint}`;
   const { adapter } = useBlinkSolanaWalletAdapter(
     `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API!}`
   );

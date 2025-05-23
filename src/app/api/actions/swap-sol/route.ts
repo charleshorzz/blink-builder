@@ -5,13 +5,18 @@ import {
   BLOCKCHAIN_IDS,
 } from "@solana/actions";
 
-import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
+import {
+  Connection,
+  PublicKey,
+  VersionedTransaction,
+  Transaction,
+} from "@solana/web3.js";
 import fetch from "cross-fetch";
 import { GET as getConfig } from "../../blink-config/route";
 import { v4 as uuidv4 } from "uuid";
 
 const connection = new Connection(
-  `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API!}`
+  `https://mainnet.helius-rpc.com/?api-key=545c2487-4ee7-407c-b2d9-facfc6661f9a`
 );
 const blockchain = BLOCKCHAIN_IDS.mainnet;
 
@@ -68,6 +73,7 @@ export const GET = async (req: Request) => {
     label,
     title: config.title || title,
     description: config.description || description,
+    // disabled: true,
     links: {
       actions: [
         ...(config.amounts || ["0.01", "0.05", "0.1"]).map(
@@ -103,7 +109,7 @@ export const POST = async (req: Request) => {
     const userPublicKey = new PublicKey(body.account);
     const inputMint = url.searchParams.get("inputMint");
     const outputMint = url.searchParams.get("outputMint");
-    const amountSOL = parseFloat(url.searchParams.get("amount") || "0.01");
+    const amountSOL = Number(url.searchParams.get("amount"));
     const amountLamports = Math.floor(amountSOL * 1_000_000_000);
 
     const swapID = uuidv4();
@@ -138,7 +144,6 @@ export const POST = async (req: Request) => {
         quoteResponse: quote,
         userPublicKey: userPublicKey.toBase58(),
         wrapAndUnwrapSol: true,
-        asLegacyTransaction: false,
         config: {
           maxSupportedTransactionVersion: 0,
           recentBlockhash: blockhash,
@@ -159,19 +164,16 @@ export const POST = async (req: Request) => {
     }
 
     // 5. Deserialize versioned transaction
-    const tx = VersionedTransaction.deserialize(
+    const versionedTx = VersionedTransaction.deserialize(
       Buffer.from(swapData.swapTransaction, "base64")
     );
 
-    // 6. Verify critical transaction details
-    if (!tx.message.staticAccountKeys.some((k) => k.equals(userPublicKey))) {
-      throw new Error("User public key not found in transaction accounts");
-    }
+    // 6. Serialize for client-side signing
+    const serializedTxB64 = Buffer.from(versionedTx.serialize()).toString(
+      "base64"
+    );
 
-    // 7. Serialize for client-side signing
-    const serializedTxB64 = Buffer.from(tx.serialize()).toString("base64");
-
-    // 8. Return unsigned versioned transaction
+    // 7. Return unsigned versioned transaction
     const response = {
       type: "transaction",
       transaction: serializedTxB64,
